@@ -38,7 +38,7 @@ def load_nta(scene) :
 
 @lru_cache(maxsize=None)
 def load_pixels(scene):
-    return pd.read_parquet(PROCESSED / scene / "lst_ndvi.parquet.gzip")
+    return pd.read_parquet(PROCESSED_DIR / scene / "lst_ndvi.parquet.gzip")
 
 
 def filter_residential_areas(gdf):
