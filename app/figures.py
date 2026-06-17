@@ -83,3 +83,60 @@ def make_cloropleth_map(gdf, column_name, color_options=None):
     )
 
     return fig
+
+
+def make_scatter_lst_ndvi(df_lst_ndvi, slope, intercept, pearson):
+    fig = go.Figure()
+
+    nbins=80
+    counts, xedges, yedges = np.histogram2d(
+        df_lst_ndvi["ndvi"], df_lst_ndvi["lst"], bins=nbins
+    )
+    counts = counts.T                                   # heatmap wants [y, x]
+    z = np.where(counts > 0, np.log10(counts), np.nan)  # log; empty bins → NaN
+
+    xc = 0.5 * (xedges[:-1] + xedges[1:])               # bin centers
+    yc = 0.5 * (yedges[:-1] + yedges[1:])
+
+    fig = go.Figure()
+    fig.add_trace(go.Heatmap(
+        x=xc, y=yc, z=z,
+        colorscale="Blues_r",
+        colorbar=dict(
+            title=dict(text="pixel count"),
+            tickvals=[0, 1, 2, 3],                      # log10 values…
+            ticktext=[
+                "10<sup>0</sup>", 
+                "10<sup>1</sup>", 
+                "10<sup>2</sup>", 
+                "10<sup>3</sup>"],       # …shown as real counts
+        ),
+        hovertemplate=
+        """ 
+        Pixel Count: 10<sup>%{z:.1f}</sup><br>
+        NDVI: %{x:.2f}<br>
+        LST: %{y:.1f}°C<extra></extra>
+        """,
+    ))
+
+    x = np.linspace(0,1, 100)
+    fig.add_trace(go.Scatter(
+        x=x, y=slope * x + intercept, mode="lines",
+        line=dict(color="crimson", width=2, dash="dash"),
+        name=f"fit (r = {pearson:.2f})",
+    ))
+
+    fig.update_layout(
+        width=500,
+        height=400,
+        margin=dict(t=50, b=50, l=60, r=20),
+        title=dict(text=f"Greener blocks stay cooler — {slope / 10:.2f} °C per 0.1 NDVI"),
+        xaxis_title="NDVI (vegetation)",
+        yaxis_title="LST (°C)",
+        legend=dict(x=0.98, y=0.98, xanchor="right", yanchor="top"),
+        template="plotly_white",
+    )
+
+    return fig
+
+
