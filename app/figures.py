@@ -1,14 +1,43 @@
+import numpy as np
+import plotly.graph_objects as go
 
 COLS_DISPLAY= [
-    "ntaname", "boroname", 
+    "ntaname", "boroname",
     "ntatype_name",
-    "lst_mean", "lst_std", 
-    "lst_min", "lst_max", 
+    "lst_mean", "lst_std",
+    "lst_min", "lst_max",
     "ndvi_mean", "ndvi_std",
     "ndvi_min", "ndvi_max",
     ]
 
-def make_cloropleth_map(gdf, column_name):
+# What the choropleth can be colored by.
+# Each entry: how to label it (dropdown + title), the colorbar text,
+# the colorscale, and a fixed range (None = auto-range from the data).
+COLOR_OPTIONS = {
+    "lst_mean": {
+        "label": "Mean surface temperature",
+        "legend": "LST (°C)",
+        "colorscale": "RdYlBu_r",
+        "zmin": None, "zmax": None,
+    },
+    "ndvi_mean": {
+        "label": "Vegetation (NDVI)",
+        "legend": "NDVI",
+        "colorscale": "RdYlGn",
+        "zmin": -1, "zmax":1, 
+    },
+    "lst_std": {
+        "label": "Temperature variability (heat inequality)",
+        "legend": "LST std (°C)",
+        "colorscale": "Reds",
+        "zmin": None, "zmax": None,
+    },
+}
+
+
+def make_cloropleth_map(gdf, column_name, color_options=None):
+
+    opt = (color_options or COLOR_OPTIONS)[column_name]
 
     gdf_json = gdf.set_index("nb_id").__geo_interface__
 
@@ -17,12 +46,12 @@ def make_cloropleth_map(gdf, column_name):
         locations=gdf["nb_id"],
         featureidkey="id",
         z=gdf[column_name],
-        colorscale="RdYlGn",
-        zmin=-1, zmax=1,            # NDVI range for built-up NYC (tweak to taste)
+        colorscale=opt["colorscale"],
+        zmin=opt.get("zmin"), zmax=opt.get("zmax"),   # None → Plotly auto-ranges
         marker_line_color="green",
         marker_line_width=0.5,
         marker_opacity=0.7,
-        colorbar=dict(title=dict(text="NDVI")),
+        colorbar=dict(title=dict(text=opt["legend"])),
         customdata=gdf[COLS_DISPLAY],
         hovertemplate=(
             "<b>%{customdata[0]}</b> (%{customdata[1]})<br>"
@@ -44,7 +73,8 @@ def make_cloropleth_map(gdf, column_name):
     ))
 
     fig.update_layout(
-        margin=dict(t=0, b=0, l=0, r=0),
+        margin=dict(t=30, b=0, l=0, r=0),
+        title=dict(text=opt["label"], x=0.5, xanchor="center"),
         map=dict(
             style="open-street-map",
             center=dict(lat=40.70, lon=-73.95),
