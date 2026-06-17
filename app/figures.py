@@ -140,3 +140,36 @@ def make_scatter_lst_ndvi(df_lst_ndvi, slope, intercept, pearson):
     return fig
 
 
+def make_ranking_bar(df_ranking, value_col="lst_mean", label_col="ntaname",
+                     colorscale="RdYlBu_r", legend_name="Mean LST (°C)",
+                     title="Hottest & coolest residential neighborhoods"):
+    """Ranked horizontal bar of neighborhoods by a metric.
+    """
+    df = df_ranking.sort_values(value_col)
+
+    fig = go.Figure(go.Bar(
+        x=df[value_col],
+        y=df[label_col],
+        orientation="h",
+        marker=dict(
+            color=df[value_col],
+            colorscale=colorscale,
+            colorbar=dict(title=dict(text=legend_name)),
+        ),
+        customdata=df[["boroname", "ndvi_mean"]],
+        hovertemplate=(
+            "<b>%{y}</b> (%{customdata[0]})<br>"
+            "%{x:.1f}°C<br>"
+            "NDVI: %{customdata[1]:.2f}<extra></extra>"
+        ),
+    ))
+
+    fig.update_layout(
+        margin=dict(t=50, b=40, l=10, r=20),
+        title=dict(text=title),
+        xaxis_title=legend_name,
+        yaxis_title=None,
+        template="plotly_white",
+    )
+
+    return fig
