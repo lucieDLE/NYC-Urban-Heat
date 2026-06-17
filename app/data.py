@@ -33,6 +33,7 @@ scene_mapping = {k: v for k, v in zip(scenes, scene_names)}
 def load_nta(scene) :
     gdf = gpd.read_file(PROCESSED_DIR / scene / "temperature.geojson")
     gdf["nb_id"] = gdf["nb_id"].astype(int)
+    gdf['ntatype_name'] = gdf['ntatype'].apply(lambda x: ntatype_mapping[x])
     return gdf
 
 @lru_cache(maxsize=None)
