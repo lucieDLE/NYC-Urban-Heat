@@ -1,0 +1,75 @@
+
+
+#page-wrapper {
+    height: 100vh;             /* fill the whole viewport height */
+    display: flex;
+    flex-direction: column;    /* stack children top → bottom */
+}
+
+/* the ribbon: full-width dark bar */
+.ribbon {
+    height: 64px;
+    flex-shrink: 0;            /* never let it get squished */
+    background: #131B26;
+    color: #fff;
+    display: flex;
+    align-items: center;       /* vertically center its contents */
+    padding: 32px;
+    font-family: sans-serif;
+    font-weight: 600;
+    font-size: 18px;
+    justify-content: space-between 
+}
+
+.subtitle{
+    display: flex;    /* row by default */
+    background: #131B26;
+    color: #fff;
+    justify-content: space-between ;
+    align-items: center;       /* vertically center its contents */
+    padding-left: 32px;
+    font-style: italic;
+}
+
+
+
+.rail {
+    width: 264px;
+    flex-shrink: 0;
+    background: #131B26;
+    color: #C7D2DE;
+    align-items: center;       /* vertically center its contents */
+    display: inline-block;
+}
+.nav{
+    flex-direction: column;
+    align-items: center;       /* vertically center its contents */
+}
+
+a{
+    color: rgba(116, 126, 142, 1);
+    text-decoration: none;
+    padding: 12px;
+}
+.shell {
+    flex: 1;          /* eat all remaining height under the ribbon */
+    display: flex;    /* row by default */
+    min-height: 0;    /* lets the child actually scroll instead of overflowing */
+}
+
+main {
+    flex: 1;          /* take the rest of the width */
+    min-width: 0;
+    overflow-y: auto; /* this is the scrolling region */
+    scroll-snap-type: y proximity;
+}
+.section{
+    min-height: calc(100vh - 64px); 
+    scroll-snap-align: start;        /* snap so the section's TOP aligns to the top */
+    padding: 72px;
+    max-width: 1080px;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
