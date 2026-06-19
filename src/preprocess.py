@@ -1,4 +1,4 @@
-
+import numpy as np
 import geopandas as gpd
 import rioxarray
 import xarray as xr
@@ -34,12 +34,14 @@ for scene in scenes:
 
     red_file = 'data/raw/' + scene_name + '/' + scene_name + '_SR_B4.TIF'
     nir_file = 'data/raw/' + scene_name + '/' + scene_name + '_SR_B5.TIF'
+    green_file = 'data/raw/' + scene_name + '/' + scene_name + '_SR_B3.TIF'
 
     ds_temperature = rioxarray.open_rasterio(temperature_file, masked=True)
 
     qa = rioxarray.open_rasterio(qa_file, masked=False)
     red_band = rioxarray.open_rasterio(red_file, masked=True) * 0.0000275 - 0.2
     nir_band = rioxarray.open_rasterio(nir_file, masked=True) * 0.0000275 - 0.2
+    green_band =rioxarray.open_rasterio(green_file, masked=True) * 0.0000275 - 0.2
 
     # Bit 3 = cloud, Bit 4 = cloud shadow --> remove all clouds from temperature
     qa_int16 = qa.data.astype('int16')
@@ -65,7 +67,17 @@ for scene in scenes:
     ndvi = ndvi.rio.reproject("EPSG:4326")
     ndvi = ndvi.rio.clip(gdf_neigbhorhood.geometry, gdf_neigbhorhood.crs)
 
-    ndvi_matched = ndvi.rio.reproject_match(lst_celsius)
+    # compute NDWI layer
+    ndwi = (green_band - nir_band) / (green_band + nir_band)
+    ndwi.name = "ndwi"
+
+    ndwi = ndwi.rio.reproject("EPSG:4326")
+    ndwi = ndwi.rio.clip(gdf_neigbhorhood.geometry, gdf_neigbhorhood.crs)
+
+    max_wv = np.maximum(ndvi, ndwi) 
+    max_wv.name = 'ndvi'
+
+    ndvi_matched = max_wv.rio.reproject_match(lst_celsius)
     ds_lst_ndvi = xr.merge([
         lst_celsius.rename("lst"),
         ndvi_matched.rename("ndvi"),
