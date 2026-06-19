@@ -14,6 +14,8 @@ from pathlib import Path
 from functools import lru_cache
 from src.config import *
 import calendar
+from display_text import NTA_MAPPING_GRAPH
+
 
 scenes = sorted(p.name for p in Path(PROCESSED_DIR).iterdir() if p.is_dir())
 scene_names = []
@@ -32,16 +34,26 @@ for k, v in zip(scenes, scene_names):
 # df_lst_ndvi = pd.read_parquet('../data/processed/20190729_20200827/lst_ndvi.parquet.gzip')
 # gdf_nb_temperature = gpd.read_file('../data/processed/20190729_20200827/temperature.geojson')
 
+def shorten_names(name):
+    if len(name) > 30:
+        new_name = NTA_MAPPING_GRAPH[name]
+        return new_name
+    else: return name
+    
+
 @lru_cache(maxsize=None)
 def load_nta(scene) :
     gdf = gpd.read_file(PROCESSED_DIR / scene / "temperature.geojson")
     gdf["nb_id"] = gdf["nb_id"].astype(int)
     gdf['ntatype_name'] = gdf['ntatype'].apply(lambda x: ntatype_mapping[x])
+    gdf['ntaname'] = gdf.apply(lambda row: shorten_names(row['ntaname']), axis=1)
+
     return gdf
 
 @lru_cache(maxsize=None)
 def load_pixels(scene):
     return pd.read_parquet(PROCESSED_DIR / scene / "lst_ndvi.parquet.gzip")
+
 
 
 def filter_residential_areas(gdf):
