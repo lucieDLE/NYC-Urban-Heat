@@ -4,12 +4,14 @@ import re
 import dash
 from dash import html, dcc
 import dash_bootstrap_components as dbc
+from src import config
+from data import dict_scene_mapping, list_scene_dropdown
 
-def stat_card(title, value, sub, card_id):
+def stat_card(title, value, sub, stat_id, stat_location, card_id='card'):
     return html.Div([
             html.Div(title),
-            html.H5(value), 
-            html.P(sub),
+            html.H5(value, id=stat_id), 
+            html.P(sub, id=stat_location),
         ], className=card_id,
     )
 
@@ -20,6 +22,12 @@ def build_layout():
             dbc.Switch(id="switch-theme", value=True, className="d-inline-block ms-1", persistence=True),
             dbc.Label(className="fa fa-moon", html_for="switch"),
         ])
+
+    dropdown = dcc.Dropdown(
+        options=list_scene_dropdown,
+        value=config.DEFAULT_SCENE,
+        id="scene-dropdown",
+        )
 
     ribbon = html.Div([
             html.H1("Exploring NYC Urban Heat"), 
@@ -47,12 +55,13 @@ def build_layout():
                 html.Div("Overview", className="eyebrow"),
                 html.H1("Does greener mean cooler?"),
                 html.P("text",className="section-description"),
+                dropdown,
                 html.Div([
-                    stat_card("title", 30, "sub", "card"),
-                    stat_card("title", 30, "sub", "card"),
-                    stat_card("title", 30, "sub", "card"),
-                    stat_card("title", 30, "sub", "card"),
-                ],className='overview-card-section')
+                    stat_card("City mean surface temp",      "—", "all areas",    "kpi-mean", "loc-mean"),
+                    stat_card("Coolest Temperature",         "—", "neighborhood", "kpi-min",  "location-min"),
+                    stat_card("Hottest Temperature",         "—", "neighborhood", "kpi-max",  "location-max"),
+                    stat_card("Vegetation-heat correlation", "—", "Pearson r",    "kpi-corr", "loc-corr"),
+                    ],className='overview-card-section')
             ], className='section'),
         html.Section(
             id='maps', 
