@@ -139,11 +139,12 @@ def make_scatter_lst_ndvi(df_lst_ndvi, slope, intercept, pearson):
 
 
 def make_ranking_bar(df_ranking, value_col="lst_mean", label_col="ntaname",
-                     colorscale="RdYlBu_r", legend_name="Mean LST (°C)",
+                     colorscale="YlOrRd", legend_name="Mean LST (°C)",
                      title="Hottest & coolest residential neighborhoods"):
     """Ranked horizontal bar of neighborhoods by a metric.
     """
     df = df_ranking.sort_values(value_col)
+    color_max = df[value_col].max() +5
 
     fig = go.Figure(go.Bar(
         x=df[value_col],
@@ -152,22 +153,32 @@ def make_ranking_bar(df_ranking, value_col="lst_mean", label_col="ntaname",
         marker=dict(
             color=df[value_col],
             colorscale=colorscale,
-            colorbar=dict(title=dict(text=legend_name)),
+            cmin=20,
+            cmax=color_max,
+            showscale=False
         ),
-        customdata=df[["boroname", "ndvi_mean"]],
+        texttemplate="%{x:.1f} °C",
+        textposition="outside",
+        cliponaxis=False,
+        customdata=df[["boroname", "ndvi_mean", "ntatype_name"]],
         hovertemplate=(
             "<b>%{y}</b> (%{customdata[0]})<br>"
+            "Type: %{customdata[2]}<br>"
             "%{x:.1f}°C<br>"
             "NDVI: %{customdata[1]:.2f}<extra></extra>"
         ),
     ))
 
+    n = len(df)
     fig.update_layout(
         margin=dict(t=50, b=40, l=10, r=20),
         title=dict(text=title),
         xaxis_title=legend_name,
         yaxis_title=None,
         template="plotly_white",
+        bargap=0.5, 
+        barcornerradius=10,
     )
+    fig.update_xaxes(range=[20, color_max])
 
     return fig

@@ -68,15 +68,16 @@ def compute_indicators(gdf_temperature, df_lst_ndvi):
 
     gdf_residential_temperature = filter_residential_areas(gdf_temperature)
 
-    df_coolest = gdf_temperature.sort_values(by=['lst_mean'])[['boroname', 'ntatype', 'ntaname', 'lst_mean', 'lst_std','ndvi_mean',  'ndvi_std'] ].dropna()
+    df_lst_mean_all = gdf_temperature.sort_values(by=['lst_mean'])[['ntatype_name','boroname', 'ntatype', 'ntaname', 'lst_mean', 'lst_std','ndvi_mean',  'ndvi_std'] ].dropna()
+    df_lst_min_max_all = pd.concat([df_lst_mean_all[:3], df_lst_mean_all[-3:]])
 
     
-    df_lst_mean = gdf_residential_temperature.sort_values(by='lst_mean')[ ['borocode','boroname','ntaname','nb_id', 'lst_mean', 'ndvi_mean']]
-    df_lst_min_max_nb = pd.concat([df_lst_mean[:5], df_lst_mean[-5:]])
+    df_lst_mean = gdf_residential_temperature.sort_values(by='lst_mean')[ ['ntatype_name','borocode','boroname','ntaname','nb_id', 'lst_mean', 'ndvi_mean']]
+    df_lst_min_max_nb = pd.concat([df_lst_mean[:3], df_lst_mean[-3:]])
     
 
     df_lst_std = gdf_residential_temperature.sort_values(by=['lst_mean', 'ndvi_mean'], ascending=[False, True])[['boroname', 'ntaname', 'lst_mean', 'lst_std','ndvi_mean',  'ndvi_std'] ]
-    df_inequality = pd.concat([df_lst_std[:5],df_lst_std[-5:] ])
+    df_inequality = pd.concat([df_lst_std[:3],df_lst_std[-3:] ])
     
     max_val = gdf_temperature.sort_values(by='lst_mean', ascending=False).iloc[0]
     min_val = gdf_temperature.sort_values(by='lst_mean', ascending=True).iloc[0]
@@ -104,6 +105,6 @@ def compute_indicators(gdf_temperature, df_lst_ndvi):
 
     # Tile 1: Coolest Neighborhoods
     # ---> parks with low temperature, high ndvi mean 
-    dict_indicators['ranking Heat Inequality'] = df_coolest.head(10)
+    dict_indicators['ranking Hottest/Coolest'] = df_lst_min_max_all
 
     return dict_indicators

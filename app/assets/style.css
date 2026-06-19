@@ -139,11 +139,14 @@ main {
 .maps-grid{
 
     display: grid; 
-    /* (Grid is easier than flex for equal halves.) */
     grid-template-columns: 1fr 1fr; 
     gap: 24px;
 }
 
 #maps {
-    max-width: 1400px;   /* or whatever feels right; `none` removes the cap entirely */
+    max-width: 1400px;
 }
+#ranks .chart-card {
+    max-width: none;   /* drop the 640px cap for this section's card */
+}
+#ranks .js-plotly-plot { height: 480px !important; }

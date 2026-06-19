@@ -99,3 +99,20 @@ def update_choropleth(value):
     ndvi_fig = figures.make_cloropleth_map(gdf, 'ndvi_mean')
 
     return lst_fig, ndvi_fig
+
+@callback(
+    Output(component_id="ranking-fig", component_property="figure"),
+    Input("scene-dropdown", "value"),
+    Input("ranking-scope", "value"),
+    )
+def update_scatter_stats(scene, scope):
+
+    gdf = load_nta(scene)
+
+    ind = compute_indicators(gdf, load_pixels(scene))
+    if scope == 'res':
+        fig = figures.make_ranking_bar(ind['ranking Hottest/Coolest Residential'])
+    else:
+        fig = figures.make_ranking_bar(ind['ranking Hottest/Coolest'])
+
+    return fig

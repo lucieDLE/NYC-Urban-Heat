@@ -91,7 +91,7 @@ def build_layout():
                 html.Div([
                     graph_card("scatter-fig"),
                     html.Div([
-                        stat_card("Vegetation–heat correlation", "—", "Pearson r", "scatter-rcoff", "scatter-rcoff-loc"),
+                        stat_card("Vegetation-heat correlation", "—", "Pearson r", "scatter-rcoff", "scatter-rcoff-loc"),
                         stat_card("Residential impact", "to come", "detail", "scatter-residential", "corr-residential-loc"),
                         stat_card("Cooling effect", "—", "°C per 0.1 NDVI", "scatter-slope", "corr-slope-loc"),
                     ], className="panel-side"),
@@ -104,7 +104,19 @@ def build_layout():
                 html.Div("Where", className="eyebrow"),
                 html.H1("Heat and people"),
                 html.P("text", className="section-description"),
-
+                html.Div([
+                    dcc.RadioItems(
+                        id="ranking-scope",
+                        options=[
+                            {"label": "Residential only", "value": "res"},
+                            {"label": "All neighborhoods", "value": "all"},
+                        ],
+                        value="all",          # default selection (also fires the callback on load)
+                        inline=True,          # lay the two options side by side
+                        className="scope-toggle",
+                    ),
+                    graph_card("ranking-fig"),
+                    ], className="rank-chart",)
                 ],
             className='section'
         ),
