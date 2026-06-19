@@ -136,3 +136,14 @@ main {
     justify-content: center; 
     gap: 18px;
 }
+.maps-grid{
+
+    display: grid; 
+    /* (Grid is easier than flex for equal halves.) */
+    grid-template-columns: 1fr 1fr; 
+    gap: 24px;
+}
+
+#maps {
+    max-width: 1400px;   /* or whatever feels right; `none` removes the cap entirely */
+}

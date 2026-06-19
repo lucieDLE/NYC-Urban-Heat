@@ -87,3 +87,15 @@ def update_scatter_stats(value):
     slope, intercept = ind['Polyfit']
 
     return f"{ind['Pearson']:.2f}", f"{slope / 10:.2f} °C"
+
+@callback(
+    Output(component_id="map-lst", component_property="figure"),
+    Output(component_id="map-ndvi", component_property="figure"),
+    Input("scene-dropdown", "value"))
+def update_choropleth(value):
+    gdf = load_nta(value)
+
+    lst_fig  = figures.make_cloropleth_map(gdf, 'lst_mean')
+    ndvi_fig = figures.make_cloropleth_map(gdf, 'ndvi_mean')
+
+    return lst_fig, ndvi_fig

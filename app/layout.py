@@ -77,10 +77,10 @@ def build_layout():
                 html.Div("The maps", className="eyebrow"),
                 html.H1("Visualize the data"),
                 html.P("text",className="section-description"),
-                # html.Div([
-                #     graph_card("map-lst", figure),
-                #     graph_card("map-ndvi", figure)
-                # ]),
+                html.Div([
+                    graph_card("map-lst"),
+                    graph_card("map-ndvi"),
+                ], className="maps-grid"),
         ],className='section'),
         html.Section(
             id='veg', 

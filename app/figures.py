@@ -76,7 +76,7 @@ def make_cloropleth_map(gdf, column_name, color_options=None):
         margin=dict(t=30, b=0, l=0, r=0),
         title=dict(text=opt["label"], x=0.5, xanchor="center"),
         map=dict(
-            style="open-street-map",
+            # style="carto-voyager",
             center=dict(lat=40.70, lon=-73.95),
             zoom=9,
         ),
