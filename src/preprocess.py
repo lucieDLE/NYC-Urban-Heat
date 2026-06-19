@@ -3,7 +3,7 @@ import geopandas as gpd
 import rioxarray
 import xarray as xr
 from geocube.api.core import make_geocube
-
+import pandas as pd 
 from pathlib import Path
 
 neighborhoods = 'data/raw/2020_Neighborhood_Tabulation_Areas_(NTAs)_20260610.geojson'
@@ -24,8 +24,6 @@ scenes = [
 
 # preprocess all scenes
 for scene in scenes:
-    print(scene)
-
 
     Path("data/processed/" + scene).mkdir(parents=True, exist_ok=True)
 
@@ -97,6 +95,19 @@ for scene in scenes:
     
     df_all = ds_all.to_dataframe().reset_index().dropna(subset=["lst", "ndvi", "nb_id"])
 
+    list_correlation = []
+    list_index = []
+    for nb_id in df_all['nb_id'].unique():
+
+        df_nb = df_all.loc[df_all['nb_id'] == nb_id]
+        pearson_coeff = df_nb['lst'].corr(df_nb['ndvi'])
+
+        list_correlation.append(pearson_coeff)
+        list_index.append(nb_id)
+
+    df_correlation = pd.DataFrame(data={'nb_id':list_index, 'correlation':list_correlation})
+
+
     df_boro_temperature = df_all.groupby('nb_id').agg(
         x = ("x", 'mean'),
         y = ("y", 'mean'),
@@ -113,6 +124,8 @@ for scene in scenes:
 
         ).reset_index()
     
+    df_boro_temperature = df_boro_temperature.merge(df_correlation, on='nb_id')
+
     df_boro_temperature['nb_id'] = df_boro_temperature['nb_id'].astype(int)
     gdf_nb_temperature = sub_gdf_nb.merge(df_boro_temperature, on='nb_id', how="left")
 
