@@ -17,14 +17,17 @@ import calendar
 
 scenes = sorted(p.name for p in Path(PROCESSED_DIR).iterdir() if p.is_dir())
 scene_names = []
-
+dict_scene_mapping = {}
+list_scene_dropdown = []
 for scene in scenes:
     year = scene[:4]
     month_nb = int(scene[4:6])
     month_name = calendar.month_name[month_nb]
     scene_names.append(month_name + ' ' + year)
 
-scene_mapping = {k: v for k, v in zip(scenes, scene_names)}
+for k, v in zip(scenes, scene_names):
+    dict_scene_mapping[k]= v
+    list_scene_dropdown.append( {'label': v, 'value': k})
 
 # df_lst_ndvi = pd.read_parquet('../data/processed/20190729_20200827/lst_ndvi.parquet.gzip')
 # gdf_nb_temperature = gpd.read_file('../data/processed/20190729_20200827/temperature.geojson')
@@ -63,11 +66,14 @@ def compute_indicators(gdf_temperature, df_lst_ndvi):
     df_lst_std = gdf_residential_temperature.sort_values(by=['lst_mean', 'ndvi_mean'], ascending=[False, True])[['boroname', 'ntaname', 'lst_mean', 'lst_std','ndvi_mean',  'ndvi_std'] ]
     df_inequality = pd.concat([df_lst_std[:5],df_lst_std[-5:] ])
     
+    max_val = gdf_temperature.sort_values(by='lst_mean', ascending=False).iloc[0]
+    min_val = gdf_temperature.sort_values(by='lst_mean', ascending=True).iloc[0]
+
     # City level temperature values for that day
     dict_indicators['City-Level Temperature'] = {
         'mean': gdf_temperature.lst_mean.mean(),
-        'min': gdf_temperature.lst_min.min(),	
-        'max': gdf_temperature.lst_max.max(),
+        'min': [min_val['ntaname'], min_val['lst_min'].item()],	
+        'max': [max_val['ntaname'], max_val['lst_max'].item()],
     }
     
     # Answer Question 1: Do greener blocks mean cooler?
