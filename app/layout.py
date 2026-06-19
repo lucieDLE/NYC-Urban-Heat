@@ -6,6 +6,7 @@ from dash import html, dcc
 import dash_bootstrap_components as dbc
 from src import config
 from data import dict_scene_mapping, list_scene_dropdown
+import display_text
 
 def stat_card(title, value, sub, stat_id, stat_location, card_id='card'):
     return html.Div([
@@ -13,6 +14,12 @@ def stat_card(title, value, sub, stat_id, stat_location, card_id='card'):
             html.H5(value, id=stat_id), 
             html.P(sub, id=stat_location),
         ], className=card_id,
+    )
+
+def graph_card(fig_id, figure=None):
+    return html.Div(
+        dcc.Graph(id=fig_id, figure=figure, responsive=True),
+        className="chart-card"
     )
 
 def build_layout():
@@ -54,7 +61,8 @@ def build_layout():
             children = [
                 html.Div("Overview", className="eyebrow"),
                 html.H1("Does greener mean cooler?"),
-                html.P("text",className="section-description"),
+                html.P(display_text.OVERVIEW_DESCRIPTION,className="section-description"),
+                html.Div("answer using correlation/polyfit", className="text-card"),
                 dropdown,
                 html.Div([
                     stat_card("City mean surface temp",      "—", "all areas",    "kpi-mean", "loc-mean"),
@@ -68,21 +76,35 @@ def build_layout():
             children = [
                 html.Div("The maps", className="eyebrow"),
                 html.H1("Visualize the data"),
-                html.P("text",className="section-description")
+                html.P("text",className="section-description"),
+                # html.Div([
+                #     graph_card("map-lst", figure),
+                #     graph_card("map-ndvi", figure)
+                # ]),
         ],className='section'),
         html.Section(
             id='veg', 
             children = [
                 html.Div("Relationship", className="eyebrow"),
                 html.H1("Vegetation & heat"),
-                html.P("text",className="section-description")
+                html.P("text",className="section-description"),
+                html.Div([
+                    graph_card("scatter-fig"),
+                    html.Div([
+                        stat_card("Vegetation–heat correlation", "—", "Pearson r", "scatter-rcoff", "scatter-rcoff-loc"),
+                        stat_card("Residential impact", "to come", "detail", "scatter-residential", "corr-residential-loc"),
+                        stat_card("Cooling effect", "—", "°C per 0.1 NDVI", "scatter-slope", "corr-slope-loc"),
+                    ], className="panel-side"),
+                ], className="panel")
+
         ],className='section'),
         html.Section(
             id='ranks', 
                     children = [
                 html.Div("Where", className="eyebrow"),
                 html.H1("Heat and people"),
-                html.P("text",className="section-description")
+                html.P("text", className="section-description"),
+
                 ],
             className='section'
         ),

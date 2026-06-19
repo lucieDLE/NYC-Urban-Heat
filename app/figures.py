@@ -127,8 +127,6 @@ def make_scatter_lst_ndvi(df_lst_ndvi, slope, intercept, pearson):
     ))
 
     fig.update_layout(
-        width=500,
-        height=400,
         margin=dict(t=50, b=50, l=60, r=20),
         title=dict(text=f"Greener blocks stay cooler — {slope / 10:.2f} °C per 0.1 NDVI"),
         xaxis_title="NDVI (vegetation)",
