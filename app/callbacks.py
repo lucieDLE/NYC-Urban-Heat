@@ -8,52 +8,34 @@ import figures
 
 @callback(
     Output(component_id="kpi-mean", component_property="children"),
-    Input("scene-dropdown", "value")
-    )
-def update_mean_card(value):
-    gdf = load_nta(value)
-    ind = compute_indicators(gdf, load_pixels(value))
-    
-    return f"{ind['City-Level Temperature']['mean']:.1f} °C"
 
-@callback(
     Output(component_id="kpi-min", component_property="children"),
     Output(component_id="location-min", component_property="children"),
-    Input("scene-dropdown", "value")
-    )
 
-def update_min_card(value):
-    gdf = load_nta(value)
-    ind = compute_indicators(gdf, load_pixels(value))
-
-    min_vals = ind['City-Level Temperature']['min']
-    return f"{min_vals[1]:.1f} °C", min_vals[0]
-
-
-
-@callback(
     Output(component_id="kpi-max", component_property="children"),
     Output(component_id="location-max", component_property="children"),
-    Input("scene-dropdown", "value")
-    )
-def update_max_card(value):
-    gdf = load_nta(value)
-    ind = compute_indicators(gdf, load_pixels(value))
-    
-    max_vals = ind['City-Level Temperature']['max']
-    return f"{max_vals[1]:.1f} °C", max_vals[0]
 
-
-
-@callback(
     Output(component_id="kpi-corr", component_property="children"),
+
+    Output(component_id='finding-value', component_property='children'),
     Input("scene-dropdown", "value")
     )
-def update_ndvi_corr_card(value):
+def update_cards(value):
     gdf = load_nta(value)
     ind = compute_indicators(gdf, load_pixels(value))
     
-    return f"{ind['Pearson']:.2f}"
+    mean =  f"{ind['City-Level Temperature']['mean']:.1f} °C"
+
+    min_vals = ind['City-Level Temperature']['min']
+    min_val, min_loc = f"{min_vals[1]:.1f} °C", min_vals[0]
+
+    max_vals = ind['City-Level Temperature']['max']
+    max_val, max_loc = f"{max_vals[1]:.1f} °C", max_vals[0]
+    
+    p_corr =  f"{ind['Pearson']:.2f}"
+    slope = f"{abs(ind['Polyfit'][0]) / 10:.1f} °C"
+
+    return mean, min_val, min_loc, max_val, max_loc, p_corr, slope
 
 @callback(
     Output(component_id="scatter-fig", component_property="figure"),

@@ -8,12 +8,12 @@ from src import config
 from data import dict_scene_mapping, list_scene_dropdown
 import display_text
 
-def stat_card(title, value, sub, stat_id, stat_location, card_id='card'):
+def stat_card(title, value, sub, stat_id, stat_location, accent="#CF4226", card_id='card'):
     return html.Div([
             html.Div(title),
             html.H5(value, id=stat_id), 
             html.P(sub, id=stat_location),
-        ], className=card_id,
+        ], className=card_id, style={"--bar": accent}
     )
 
 def graph_card(fig_id, figure=None):
@@ -35,6 +35,16 @@ def build_layout():
         value=config.DEFAULT_SCENE,
         id="scene-dropdown",
         )
+
+    finding = html.Div([
+        html.Div(className="scale"),          # the gradient bar
+        html.P([
+            html.B("Yes."),
+            " At the land surface, temperature falls about ",
+            html.B(id="finding-value", children="—"), 
+            " for every 0.1 gain in NDVI, and the bare, paved blocks are the ones that heat up.",
+        ]),
+    ], className="finding")
 
     ribbon = html.Div([
             html.H1("Exploring NYC Urban Heat"), 
@@ -62,13 +72,13 @@ def build_layout():
                 html.Div("Overview", className="eyebrow"),
                 html.H1("Does greener mean cooler?"),
                 html.P(display_text.OVERVIEW_DESCRIPTION,className="section-description"),
-                html.Div("answer using correlation/polyfit", className="text-card"),
                 dropdown,
+                finding,
                 html.Div([
-                    stat_card("City mean surface temp",      "—", "all areas",    "kpi-mean", "loc-mean"),
-                    stat_card("Coolest Temperature",         "—", "neighborhood", "kpi-min",  "location-min"),
-                    stat_card("Hottest Temperature",         "—", "neighborhood", "kpi-max",  "location-max"),
-                    stat_card("Vegetation-heat correlation", "—", "Pearson r",    "kpi-corr", "loc-corr"),
+                    stat_card("City mean surface temp", "—", "all areas", "kpi-mean", "loc-mean", accent="#E9C158"),
+                    stat_card("Coolest Temperature", "—", "neighborhood", "kpi-min", "location-min", accent="#3D86C0"),
+                    stat_card("Hottest Temperature", "—", "neighborhood", "kpi-max", "location-max", accent="#CF4226"),
+                    stat_card("Vegetation-heat coeff", "—", "Pearson correlation", "kpi-corr", "loc-corr", accent="#8493A0"),
                     ],className='overview-card-section')
             ], className='section'),
         html.Section(
