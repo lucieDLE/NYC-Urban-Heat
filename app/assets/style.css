@@ -1,4 +1,10 @@
 
+:root {
+    --disp: 'Space Grotesk', system-ui, sans-serif;
+    --mono: 'JetBrains Mono', ui-monospace, monospace;
+}
+
+body { font-family: var(--disp); }
 
 #page-wrapper {
     height: 100vh;             /* fill the whole viewport height */
@@ -30,9 +36,8 @@
     padding-left: 32px;
     font-style: italic;
     border-bottom: 2px solid #2B3848;
-
 }
-
+.subtitle h5 { font-weight: 200; }
 
 /* ---------  Left rail ----------- */
 
@@ -96,17 +101,27 @@ main {
     scroll-snap-align: start;        /* snap so the section's TOP aligns to the top */
     padding: 72px;
     max-width: 1080px;
-
     display: flex;
     flex-direction: column;
     justify-content: center;
 }
+.section h1{ font-family: var(--mono)}
+
 .overview-card-section {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     gap: 18px;
     margin-top: 38px;
   }
+
+.eyebrow {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: .22em;
+    text-transform: uppercase;
+    color: #DD4B2A;
+    font-family: var(--mono);
+}
 
 
 /* ---------  Card ----------- */
@@ -124,6 +139,7 @@ main {
     font-size: 13px;
     color: #55636E;
     font-weight: 500;
+    font-family: var(--mono)
 }
 .card h5 {
     font-size: 38px;
@@ -138,6 +154,33 @@ main {
     color: #8493A0;
     margin: 10px 0 0;
 }
+
+.finding {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    background: #fff;
+    border-radius: 14px;
+    padding: 20px 24px;
+    box-shadow: 0 1px 2px rgba(19,27,38,.06), 0 1px 3px rgba(19,27,38,.05);
+    max-width: 680px;
+    margin-top: 24px;
+}
+.finding .scale {
+    width: 8px;
+    height: 54px;
+    border-radius: 5px;
+    flex-shrink: 0;
+    background: linear-gradient(to top, #CF4226, #E9C158, #3D86C0);  /* red↓ → blue↑ */
+}
+.finding p { 
+    font-size: 17px; 
+    color: #16202E; 
+    margin-bottom: 0px; 
+}
+
+/* satellites and scatter chart cards */
+
 .chart-card {
     background: #fff;
     border-radius: 14px;
