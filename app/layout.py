@@ -47,12 +47,12 @@ def build_layout():
     )
 
     rail = html.Aside(html.Nav([
-        html.A('overview', href="#overview"),
-        html.A('Vegetation & heat', href="#veg"),
-        html.A('The maps', href="#maps"),
-        html.A('where', href="#ranks"),
-        html.A('Heat risk', href="#risk"),
-        html.A('Methodology', href="#method"),
+        html.A([html.I(className="fa-solid fa-calendar-day"), 'overview'], href="#overview"),
+        html.A([html.I(className="fa-solid fa-satellite"), 'The maps'], href="#maps"),
+        html.A([html.I(className="fa-solid fa-leaf"), 'Vegetation & heat'], href="#veg"),
+        html.A([html.I(className="fa-solid fa-location-dot"), 'where'], href="#ranks"),
+        html.A([html.I(className="fa-solid fa-people-group"), 'Heat risk'], href="#risk"),
+        html.A([html.I(className="fa-solid fa-book-bookmark"), 'Methodology'], href="#method"),
     ], className='nav'), className="rail")
 
     main = html.Main([
