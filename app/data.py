@@ -56,8 +56,8 @@ def load_pixels(scene):
 
 
 
-def filter_residential_areas(gdf):
-    return gdf.loc[ gdf.ntatype == '0']
+def filter_on_area(gdf, type_nb):
+    return gdf.loc[ gdf.ntatype == type_nb]
 
 def compute_indicators(gdf_temperature, df_lst_ndvi):
 
@@ -66,7 +66,8 @@ def compute_indicators(gdf_temperature, df_lst_ndvi):
     pearson_coeff = df_lst_ndvi['lst'].corr(df_lst_ndvi['ndvi'])
     slope, intercept = np.polyfit(df_lst_ndvi["ndvi"], df_lst_ndvi["lst"], 1)
 
-    gdf_residential_temperature = filter_residential_areas(gdf_temperature)
+
+    gdf_residential_temperature = filter_on_area(gdf_temperature, '0')
 
     df_lst_mean_all = gdf_temperature.sort_values(by=['lst_mean'])[['ntatype_name','boroname', 'ntatype', 'ntaname', 'lst_mean', 'lst_std','ndvi_mean',  'ndvi_std'] ].dropna()
     df_lst_min_max_all = pd.concat([df_lst_mean_all[:3], df_lst_mean_all[-3:]])
@@ -92,7 +93,6 @@ def compute_indicators(gdf_temperature, df_lst_ndvi):
     # Answer Question 1: Do greener blocks mean cooler?
     dict_indicators['Pearson'] = pearson_coeff
     dict_indicators['Polyfit'] = (slope, intercept)
-
 
     # Tile 2: plot Heat beside Green (LST/NDVI mean)
     # plot gdf_type 0 for Heat but all ntatype for NDVI
