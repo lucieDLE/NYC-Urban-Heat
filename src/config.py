@@ -6,6 +6,7 @@ PROCESSED_DIR = ROOT / 'data/processed'
 
 DEFAULT_SCENE = "20230809_20230812"
 
+DEMOGRAPHICS_CSV = PROCESSED_DIR / "nyc_nta_race_ethnicity_2020_exclusive.csv"
 
 ntatype_mapping = {
     '0':"Residential",
