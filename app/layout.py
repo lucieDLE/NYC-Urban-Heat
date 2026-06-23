@@ -16,10 +16,10 @@ def stat_card(title, value, sub, stat_id, stat_location, accent="#CF4226", card_
         ], className=card_id, style={"--bar": accent}
     )
 
-def graph_card(fig_id, figure=None):
+def graph_card(fig_id, figure=None, classname="chart-card"):
     return html.Div(
         dcc.Graph(id=fig_id, figure=figure, responsive=True),
-        className="chart-card"
+        className=classname
     )
 
 def build_layout():
@@ -61,7 +61,8 @@ def build_layout():
         html.A([html.I(className="fa-solid fa-satellite"), 'The maps'], href="#maps"),
         html.A([html.I(className="fa-solid fa-leaf"), 'Vegetation & heat'], href="#veg"),
         html.A([html.I(className="fa-solid fa-location-dot"), 'where'], href="#ranks"),
-        html.A([html.I(className="fa-solid fa-people-group"), 'Heat risk'], href="#risk"),
+        html.A([html.I(className="fa-solid fa-people-group"), 'Heat inequality'], href="#risk"),
+        html.A([html.I(className="fa-solid fa-people-group"), 'Demographics'], href="#demographics"),
         html.A([html.I(className="fa-solid fa-book-bookmark"), 'Methodology'], href="#method"),
     ], className='nav'), className="rail")
 
@@ -110,7 +111,7 @@ def build_layout():
         ],className='section'),
         html.Section(
             id='ranks', 
-                    children = [
+            children = [
                 html.Div("Where", className="eyebrow"),
                 html.H1("Heat and people"),
                 html.P("text", className="section-description"),
@@ -132,10 +133,34 @@ def build_layout():
         ),
         html.Section(
             id='risk', 
-                    children = [
+            children = [
                 html.Div("risk", className="eyebrow"),
                 html.H1("Heat inequality"),
-                html.P("text",className="section-description")
+                html.P("text",className="section-description"),
+                graph_card("risk-scatter-fig", classname="scatter-heat"),
+                ],
+            className='section'
+        ),
+
+        html.Section(
+            id='demographics', 
+            children = [
+                html.Div("Demographics", className="eyebrow"),
+                html.H1("Explore the communities at risk"),
+                dcc.RadioItems(
+                    id="demo-layer",
+                    options=[
+                        {"label": "Asian",             "value": "asian_pct"},
+                        {"label": "Black",             "value": "black_pct"},
+                        {"label": "Hispanic",          "value": "hispanic_pct"},
+                        {"label": "White",             "value": "white_pct"},
+                        {"label": "Predominant group", "value": "predominant_group"},
+                        ],
+                    value="hispanic_pct",
+                    inline=True,
+                    className="scope-toggle",
+                ),
+                graph_card("demographics-map", classname='demographic-chart')
                 ],
             className='section'
         ),
