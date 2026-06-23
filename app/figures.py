@@ -182,33 +182,63 @@ def make_scatter_lst_ndvi(df_lst_ndvi, slope, intercept, pearson):
 
     return fig
 
-def make_inequality_scatter(gdf_residential, gdf):
+BORO_COLORS = {
+    "Manhattan":    "#D55E00",
+    "Brooklyn":     "#4477AA",
+    "Queens":       "#228833",
+    "Bronx":    "#9467BD",
+    "Staten Island":"#D62728",
+}
 
-    all_boros = gdf_residential['borocode'].unique()
+def make_inequality_scatter(gdf_residential, gdf):
     fig = go.Figure()
-    for boro in all_boros:
+
+    for boro in sorted(gdf_residential['borocode'].unique()):
         gdf_nb = gdf_residential.loc[gdf_residential['borocode'] == boro]
+        boro_name = gdf_nb['boroname'].iloc[0]
         fig.add_trace(go.Scatter(
-            x = gdf_nb['lst_std'],
-            y = gdf_nb['lst_mean'],
-            mode = 'markers',
-            # marker=dict(
-            #     color=px_colorscale[boro-1],
-            #     size=(gdf_nb['ndvi_mean'].astype(int)+1)*8, 
-            #             ),
-            showlegend=True,
-            name = gdf_nb['boroname'].iloc[0]
+            x=gdf_nb['lst_std'],
+            y=gdf_nb['lst_mean'],
+            mode='markers',
+            marker=dict(
+                color=BORO_COLORS.get(boro_name, "#8493A0"),
+                size=9,
+                opacity=0.9,
+                line=dict(width=0.8, color='white'),
+            ),
+            name=boro_name,
+            customdata=gdf_nb[['ntaname', 'ndvi_mean']],
+            hovertemplate=(
+                "<b>%{customdata[0]}</b><br>"
+                "Mean LST: %{y:.1f}°C<br>"
+                "LST variability: %{x:.1f}°C<br>"
+                "NDVI: %{customdata[1]:.2f}<extra></extra>"
+            ),
         ))
 
     fig.add_vline(
         x=gdf['lst_std'].median(),
-        annotation_text="LST std median",
-        annotation_position="top",)
+        line=dict(color="#8493A0", width=1, dash="dot"),
+        annotation_text="median variability",
+        annotation_position="top right",
+        annotation_font=dict(size=11, color="#8493A0"),
+    )
     fig.add_hline(
         y=gdf['lst_mean'].mean(),
-        annotation_text="mean City LST",
-        annotation_position="left",)
+        line=dict(color="#8493A0", width=1, dash="dot"),
+        annotation_text="city avg temp",
+        annotation_position="bottom right",
+        annotation_font=dict(size=11, color="#8493A0"),
+    )
 
+    fig.update_layout(
+        template="plotly_white",
+        margin=dict(t=60, b=50, l=60, r=20),
+        title=dict(text="Heat exposure vs. within-neighborhood temperature variability"),
+        xaxis_title="LST std (°C) — within-neighborhood variability",
+        yaxis_title="Mean surface temperature (°C)",
+        legend=dict(xanchor="right", yanchor="top", bgcolor="rgba(255,255,255,0.8)"),
+    )
     return fig
 
 def make_ranking_bar(df_ranking, value_col="lst_mean", label_col="ntaname",
