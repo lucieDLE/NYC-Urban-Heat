@@ -41,6 +41,7 @@ def shorten_names(name):
 @lru_cache(maxsize=None)
 def load_nta(scene) :
     gdf = gpd.read_file(PROCESSED_DIR / scene / "temperature.geojson")
+    gdf = gdf.dropna()
     gdf["nb_id"] = gdf["nb_id"].astype(int)
     gdf['ntatype_name'] = gdf['ntatype'].apply(lambda x: ntatype_mapping[x])
     gdf['ntaname'] = gdf.apply(lambda row: shorten_names(row['ntaname']), axis=1)
@@ -49,7 +50,9 @@ def load_nta(scene) :
 
 @lru_cache(maxsize=None)
 def load_pixels(scene):
-    return pd.read_parquet(PROCESSED_DIR / scene / "lst_ndvi.parquet.gzip")
+    df = pd.read_parquet(PROCESSED_DIR / scene / "lst_ndvi.parquet.gzip")
+    
+    return df.dropna()
 
 
 @lru_cache(maxsize=None)
@@ -70,8 +73,13 @@ def compute_indicators(gdf_temperature, df_lst_ndvi):
     pearson_coeff = df_lst_ndvi['lst'].corr(df_lst_ndvi['ndvi'])
     slope, intercept = np.polyfit(df_lst_ndvi["ndvi"], df_lst_ndvi["lst"], 1)
 
-
     gdf_residential_temperature = filter_on_area(gdf_temperature, '0')
+    p_res = gdf_residential_temperature['lst_mean'].corr(gdf_residential_temperature['ndvi_mean'])
+    s_res, i_res = np.polyfit(gdf_residential_temperature["ndvi_mean"], gdf_residential_temperature["lst_mean"], 1)
+
+    p_nb = gdf_temperature['lst_mean'].corr(gdf_temperature['ndvi_mean'])
+    s_nb, i_nb = np.polyfit(gdf_temperature["ndvi_mean"], gdf_temperature["lst_mean"], 1)
+
 
     df_lst_mean_all = gdf_temperature.sort_values(by=['lst_mean'])[['ntatype_name','boroname', 'ntatype', 'ntaname', 'lst_mean', 'lst_std','ndvi_mean',  'ndvi_std'] ].dropna()
     df_lst_min_max_all = pd.concat([df_lst_mean_all[:3], df_lst_mean_all[-3:]])
@@ -95,8 +103,17 @@ def compute_indicators(gdf_temperature, df_lst_ndvi):
     }
     
     # Answer Question 1: Do greener blocks mean cooler?
-    dict_indicators['Pearson'] = pearson_coeff
-    dict_indicators['Polyfit'] = (slope, intercept)
+    dict_indicators['Pearson'] = { 
+        'all': pearson_coeff, 
+        'residential': p_res,
+        'nb': p_nb,
+        }
+
+    dict_indicators['Polyfit'] = {
+        'all': (slope, intercept), 
+        'residential': (s_res, i_res),
+        'nb': (s_nb, i_nb),
+    } 
 
     # Tile 2: plot Heat beside Green (LST/NDVI mean)
     # plot gdf_type 0 for Heat but all ntatype for NDVI

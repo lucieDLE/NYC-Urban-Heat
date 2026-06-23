@@ -32,8 +32,8 @@ def update_cards(value):
     max_vals = ind['City-Level Temperature']['max']
     max_val, max_loc = f"{max_vals[1]:.1f} °C", max_vals[0]
     
-    p_corr =  f"{ind['Pearson']:.2f}"
-    slope = f"{abs(ind['Polyfit'][0]) / 10:.1f} °C"
+    p_corr =  f"{ind['Pearson']['all']:.2f}"
+    slope = f"{abs(ind['Polyfit']['all'][0]) / 10:.1f} °C"
 
     return mean, min_val, min_loc, max_val, max_loc, p_corr, slope
 
@@ -49,16 +49,17 @@ def update_scatter_graph(value):
     df = df.dropna()
 
     ind = data.compute_indicators(gdf, data.load_pixels(value))
-    slope, intercept = ind['Polyfit']
+    slope, intercept = ind['Polyfit']['all']
 
-    fig = figures.make_scatter_lst_ndvi(df, slope, intercept, ind['Pearson'])
+    fig = figures.make_scatter_lst_ndvi(df, slope, intercept, ind['Pearson']['all'])
 
     return fig
 
 
 @callback(
     Output(component_id="scatter-rcoff", component_property="children"),
-    Output(component_id="scatter-slope", component_property="children"),
+    Output(component_id="scatter-residential", component_property="children"),
+    Output(component_id="scatter-parks", component_property="children"),
     Input("scene-dropdown", "value")
     )
 def update_scatter_stats(value):
@@ -66,9 +67,9 @@ def update_scatter_stats(value):
     gdf = data.load_nta(value)
 
     ind = data.compute_indicators(gdf, data.load_pixels(value))
-    slope, intercept = ind['Polyfit']
+    px, res, park = ind['Pearson'].values()
 
-    return f"{ind['Pearson']:.2f}", f"{slope / 10:.2f} °C"
+    return f"{px:.2f}", f"{res:.2f}", f"{park:.2f}"
 
 @callback(
     Output(component_id="map-lst", component_property="figure"),

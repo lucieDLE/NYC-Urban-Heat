@@ -97,14 +97,14 @@ def build_layout():
             id='veg', 
             children = [
                 html.Div("Relationship", className="eyebrow"),
-                html.H1("Vegetation & heat"),
+                html.H1("Vegetation & heat Correlation"),
                 html.P("text",className="section-description"),
                 html.Div([
                     graph_card("scatter-fig"),
                     html.Div([
-                        stat_card("Vegetation-heat correlation", "—", "Pearson r", "scatter-rcoff", "scatter-rcoff-loc"),
-                        stat_card("Residential impact", "to come", "detail", "scatter-residential", "corr-residential-loc"),
-                        stat_card("Cooling effect", "—", "°C per 0.1 NDVI", "scatter-slope", "corr-slope-loc"),
+                        stat_card("Pixel Level", "—", "Pearson r", "scatter-rcoff", "scatter-rcoff-loc"),
+                        stat_card("Residential only", "to come", "detail", "scatter-residential", "corr-residential-loc"),
+                        stat_card("All Neighborhoods", "—", "°C per 0.1 NDVI", "scatter-parks", "corr-slope-loc"),
                     ], className="panel-side"),
                 ], className="panel")
 
