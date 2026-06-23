@@ -3,7 +3,7 @@ import path_setup  # noqa: F401
 import json
 from dash import Input, Output, callback, Patch, callback_context
 
-from data import load_nta, load_pixels, compute_indicators
+import data 
 import figures 
 
 @callback(
@@ -21,8 +21,8 @@ import figures
     Input("scene-dropdown", "value")
     )
 def update_cards(value):
-    gdf = load_nta(value)
-    ind = compute_indicators(gdf, load_pixels(value))
+    gdf = data.load_nta(value)
+    ind = data.compute_indicators(gdf, data.load_pixels(value))
     
     mean =  f"{ind['City-Level Temperature']['mean']:.1f} °C"
 
@@ -43,12 +43,12 @@ def update_cards(value):
     )
 def update_scatter_graph(value):
 
-    gdf = load_nta(value)
-    df  = load_pixels(value)
+    gdf = data.load_nta(value)
+    df  = data.load_pixels(value)
 
     df = df.dropna()
 
-    ind = compute_indicators(gdf, load_pixels(value))
+    ind = data.compute_indicators(gdf, data.load_pixels(value))
     slope, intercept = ind['Polyfit']
 
     fig = figures.make_scatter_lst_ndvi(df, slope, intercept, ind['Pearson'])
@@ -63,9 +63,9 @@ def update_scatter_graph(value):
     )
 def update_scatter_stats(value):
 
-    gdf = load_nta(value)
+    gdf = data.load_nta(value)
 
-    ind = compute_indicators(gdf, load_pixels(value))
+    ind = data.compute_indicators(gdf, data.load_pixels(value))
     slope, intercept = ind['Polyfit']
 
     return f"{ind['Pearson']:.2f}", f"{slope / 10:.2f} °C"
@@ -75,9 +75,13 @@ def update_scatter_stats(value):
     Output(component_id="map-ndvi", component_property="figure"),
     Input("scene-dropdown", "value"))
 def update_choropleth(value):
-    gdf = load_nta(value)
+    gdf = data.load_nta(value)
+    gdf['lst_mean_dev'] = gdf['lst_mean'] - gdf['lst_mean'].mean()
 
-    lst_fig  = figures.make_cloropleth_map(gdf, 'lst_mean')
+    gdf_residential = data.filter_on_area(gdf, '0')
+    gdf_residential['lst_mean_dev'] = gdf_residential['lst_mean'] - gdf_residential['lst_mean'].mean()
+
+    lst_fig  = figures.make_cloropleth_map(gdf_residential, 'lst_mean_dev')
     ndvi_fig = figures.make_cloropleth_map(gdf, 'ndvi_mean')
 
     return lst_fig, ndvi_fig
@@ -89,12 +93,37 @@ def update_choropleth(value):
     )
 def update_scatter_stats(scene, scope):
 
-    gdf = load_nta(scene)
+    gdf = data.load_nta(scene)
 
-    ind = compute_indicators(gdf, load_pixels(scene))
+    ind = data.compute_indicators(gdf, data.load_pixels(scene))
     if scope == 'res':
         fig = figures.make_ranking_bar(ind['ranking Hottest/Coolest Residential'])
     else:
         fig = figures.make_ranking_bar(ind['ranking Hottest/Coolest'])
 
     return fig
+
+
+@callback(
+    Output("risk-scatter-fig", "figure"),
+    Input("scene-dropdown", "value"),
+    )
+def update_scatter_stats(scene):
+    gdf = data.load_nta(scene)
+
+    gdf_residential = data.filter_on_area(gdf, '0')
+
+    fig = figures.make_inequality_scatter(gdf_residential, gdf)
+    return fig 
+
+
+@callback(
+    Output("demographics-map", "figure"),
+    Input("scene-dropdown", "value"),
+    Input("demo-layer", "value"),
+)
+def update_demographics_map(scene, layer):
+    gdf = data.load_demographics(scene)
+    if layer == "predominant_group":
+        return figures.make_predominant_map(gdf)
+    return figures.make_demographics_map(gdf, layer)

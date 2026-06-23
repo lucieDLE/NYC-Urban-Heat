@@ -31,9 +31,6 @@ for k, v in zip(scenes, scene_names):
     dict_scene_mapping[k]= v
     list_scene_dropdown.append( {'label': v, 'value': k})
 
-# df_lst_ndvi = pd.read_parquet('../data/processed/20190729_20200827/lst_ndvi.parquet.gzip')
-# gdf_nb_temperature = gpd.read_file('../data/processed/20190729_20200827/temperature.geojson')
-
 def shorten_names(name):
     if len(name) > 30:
         new_name = NTA_MAPPING_GRAPH[name]
@@ -55,6 +52,13 @@ def load_pixels(scene):
     return pd.read_parquet(PROCESSED_DIR / scene / "lst_ndvi.parquet.gzip")
 
 
+@lru_cache(maxsize=None)
+def load_demographics(scene):
+    gdf = load_nta(scene)
+    df  = pd.read_csv(DEMOGRAPHICS_CSV).rename(columns={"nta_name": "ntaname"})
+    df  = df.drop(columns=["geoid", "borough", "nta_type"])
+    merged = gdf.merge(df, on="ntaname", how="left")
+    return filter_on_area(merged, "0")   # residential only, like the notebook
 
 def filter_on_area(gdf, type_nb):
     return gdf.loc[ gdf.ntatype == type_nb]
