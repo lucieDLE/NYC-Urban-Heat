@@ -261,7 +261,9 @@ main {
 .maps-grid .chart-card {
     padding: 0;
     overflow: hidden;
+    height: 500px;
 }
+.maps-grid .js-plotly-plot { height: 500px !important; }
 
 .demographic-chart .chart-card {
     padding: 0;
