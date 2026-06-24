@@ -45,7 +45,7 @@ def load_nta(scene) :
     gdf["nb_id"] = gdf["nb_id"].astype(int)
     gdf['ntatype_name'] = gdf['ntatype'].apply(lambda x: ntatype_mapping[x])
     gdf['ntaname'] = gdf.apply(lambda row: shorten_names(row['ntaname']), axis=1)
-
+    gdf['geometry'] = gdf.geometry.simplify(0.0001, preserve_topology=True)
     return gdf
 
 @lru_cache(maxsize=None)
