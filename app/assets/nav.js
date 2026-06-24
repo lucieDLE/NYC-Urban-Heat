@@ -14,7 +14,7 @@ function bindNav() {
           );
         }
       });
-    }, { root: scroller, threshold: 0.55 });            // 55% visible = "active"
+    }, { root: scroller, rootMargin: "-50% 0px -50% 0px", threshold: 0 });
 
     scroller.querySelectorAll("section").forEach((s) => io.observe(s));
   }
