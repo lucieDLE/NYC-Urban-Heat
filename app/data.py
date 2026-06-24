@@ -63,6 +63,10 @@ def load_demographics(scene):
     merged = gdf.merge(df, on="ntaname", how="left")
     return filter_on_area(merged, "0")   # residential only, like the notebook
 
+@lru_cache(maxsize=None)
+def get_indicators(scene):
+    return compute_indicators(load_nta(scene), load_pixels(scene))
+
 def filter_on_area(gdf, type_nb):
     return gdf.loc[ gdf.ntatype == type_nb]
 
