@@ -1,6 +1,6 @@
 import numpy as np
 import plotly.graph_objects as go
-
+import colors
 COLS_DISPLAY= [
     "ntaname", "boroname",
     "ntatype_name",
@@ -11,76 +11,9 @@ COLS_DISPLAY= [
     "lst_mean_dev"
     ]
 
-DEMO_GROUP_COLORS = {
-      "hispanic":           "#e6550d",  # Oranges mid
-      "white":              "#756bb1",  # Purples mid
-      "black":              "#3182bd",  # Blues mid
-      "asian":              "#31a354",  # Greens mid
-  }
-DEMO_GROUPS = list(DEMO_GROUP_COLORS.keys())
-
-# What the choropleth can be colored by.
-# Each entry: how to label it (dropdown + title), the colorbar text,
-# the colorscale, and a fixed range (None = auto-range from the data).
-COLOR_OPTIONS = {
-    "lst_mean_dev": {
-        "label": "Deviation from City-Mean surface temperature",
-        "legend": "LST (°C)",
-        "colorscale": "RdYlBu_r",
-        "zmin": None, "zmax": None,
-    },
-    "ndvi_mean": {
-        "label": "Vegetation (NDVI)",
-        "legend": "NDVI",
-        "colorscale": "RdYlGn",
-        "zmin": -1, "zmax":1, 
-    },
-    "lst_std": {
-        "label": "Temperature variability (heat inequality)",
-        "legend": "LST std (°C)",
-        "colorscale": "Reds",
-        "zmin": None, "zmax": None,
-    },
-}
-
-DEMO_COLOR_OPTIONS = {
-    "hispanic_pct":{
-        "label": "Hispanic (%)",
-        "legend": "%", 
-        "colorscale": "Oranges",
-        "zmin": 0, 
-        "zmax": 100
-        },
-
-    "white_pct":{
-        "label": "White (%)", 
-        "legend": "%", 
-        "colorscale": "Purples", 
-        "zmin": 0, 
-        "zmax": 100
-        },
-
-    "black_pct":{
-        "label": "Black (%)", 
-        "legend": "%", 
-        "colorscale": "Blues", 
-        "zmin": 0, 
-        "zmax": 100
-        },
-
-    "asian_pct":{
-        "label": "Asian (%)", 
-        "legend": "%", 
-        "colorscale": "Greens", 
-        "zmin": 0, 
-        "zmax": 100
-        },
-
-}
-
 def make_cloropleth_map(gdf, column_name, color_options=None):
 
-    opt = (color_options or COLOR_OPTIONS)[column_name]
+    opt = (color_options or colors.COLOR_OPTIONS)[column_name]
 
     gdf_json = gdf.set_index("nb_id").__geo_interface__
 
@@ -91,7 +24,7 @@ def make_cloropleth_map(gdf, column_name, color_options=None):
         z=gdf[column_name],
         colorscale=opt["colorscale"],
         zmin=opt.get("zmin"), zmax=opt.get("zmax"),   # None → Plotly auto-ranges
-        marker_line_color="green",
+        marker_line_color=opt['colorline'],
         marker_line_width=0.5,
         marker_opacity=0.7,
         colorbar=dict(title=dict(text=opt["legend"])),
@@ -182,13 +115,6 @@ def make_scatter_lst_ndvi(df_lst_ndvi, slope, intercept, pearson):
 
     return fig
 
-BORO_COLORS = {
-    "Manhattan":    "#D55E00",
-    "Brooklyn":     "#4477AA",
-    "Queens":       "#228833",
-    "Bronx":    "#9467BD",
-    "Staten Island":"#D62728",
-}
 
 def make_inequality_scatter(gdf_residential, gdf):
     fig = go.Figure()
@@ -201,7 +127,7 @@ def make_inequality_scatter(gdf_residential, gdf):
             y=gdf_nb['lst_mean'],
             mode='markers',
             marker=dict(
-                color=BORO_COLORS.get(boro_name, "#8493A0"),
+                color=colors.BORO_COLORS.get(boro_name, "#8493A0"),
                 size=9,
                 opacity=0.9,
                 line=dict(width=0.8, color='white'),
@@ -288,7 +214,7 @@ def make_ranking_bar(df_ranking, value_col="lst_mean", label_col="ntaname",
     return fig
 
 def make_demographics_map(gdf, column):
-    opt = DEMO_COLOR_OPTIONS[column]
+    opt = colors.DEMO_COLOR_OPTIONS[column]
     gdf_json = gdf.set_index("nb_id").__geo_interface__
     fig = go.Figure(go.Choroplethmap(
         geojson=gdf_json,
@@ -316,9 +242,9 @@ def make_demographics_map(gdf, column):
 
 
 def make_predominant_map(gdf):
-    n = len(DEMO_GROUPS)
-    group_to_int = {g: i for i, g in enumerate(DEMO_GROUPS)}
-    colors = list(DEMO_GROUP_COLORS.values())
+    n = len(colors.DEMO_GROUPS)
+    group_to_int = {g: i for i, g in enumerate(colors.DEMO_GROUPS)}
+    colors = list(colors.DEMO_GROUP_COLORS.values())
 
     colorscale = []
     for i, c in enumerate(colors):
@@ -345,7 +271,7 @@ def make_predominant_map(gdf):
         ),
     ))
 
-    for group, color in DEMO_GROUP_COLORS.items():
+    for group, color in colors.DEMO_GROUP_COLORS.items():
         fig.add_trace(go.Scattermap(
             lat=[None], lon=[None],
             mode="markers",
