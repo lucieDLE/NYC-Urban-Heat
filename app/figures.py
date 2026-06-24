@@ -138,7 +138,7 @@ def make_scatter_lst_ndvi(df_lst_ndvi, slope, intercept, pearson):
         df_lst_ndvi["ndvi"], df_lst_ndvi["lst"], bins=nbins
     )
     counts = counts.T                                   # heatmap wants [y, x]
-    z = np.where(counts > 0, np.log10(counts), np.nan)  # log; empty bins → NaN
+    z = np.log10(np.where(counts > 0, counts, np.nan))   # log; empty bins → NaN
 
     xc = 0.5 * (xedges[:-1] + xedges[1:])               # bin centers
     yc = 0.5 * (yedges[:-1] + yedges[1:])
@@ -243,7 +243,7 @@ def make_inequality_scatter(gdf_residential, gdf):
 
 def make_ranking_bar(df_ranking, value_col="lst_mean", label_col="ntaname",
                      colorscale="YlOrRd", legend_name="Mean LST (°C)",
-                     title="Hottest & coolest residential neighborhoods"):
+                     title="Top/Bottom 3 hottest/coolest neighborhoods"):
     """Ranked horizontal bar of neighborhoods by a metric.
     """
     df = df_ranking.sort_values(value_col)
@@ -260,7 +260,7 @@ def make_ranking_bar(df_ranking, value_col="lst_mean", label_col="ntaname",
             cmax=color_max,
             showscale=False
         ),
-        texttemplate="%{x:.1f} °C",
+        texttemplate="%{x:.1f}",
         textposition="outside",
         cliponaxis=False,
         customdata=df[["boroname", "ndvi_mean", "ntatype_name"]],
@@ -271,6 +271,8 @@ def make_ranking_bar(df_ranking, value_col="lst_mean", label_col="ntaname",
             "NDVI: %{customdata[1]:.2f}<extra></extra>"
         ),
     ))
+    fig.add_hline(y=2.5, line_width=1, line_dash="dot", line_color="#D0D0D0")
+
 
     n = len(df)
     fig.update_layout(
@@ -280,10 +282,9 @@ def make_ranking_bar(df_ranking, value_col="lst_mean", label_col="ntaname",
         yaxis_title=None,
         template="plotly_white",
         bargap=0.5, 
-        barcornerradius=10,
+        barcornerradius=5,
     )
-    fig.update_xaxes(range=[20, color_max])
-
+    fig.update_xaxes(showticklabels=False, showgrid=False, zeroline=False, rangemode="tozero")
     return fig
 
 def make_demographics_map(gdf, column):
