@@ -5,6 +5,21 @@ from dash import Input, Output, callback, Patch, callback_context
 
 import data 
 import figures 
+from functools import lru_cache
+
+@lru_cache(maxsize=None)
+def make_figures(scene):
+    gdf = data.load_nta(scene)
+    gdf['lst_mean_dev'] = gdf['lst_mean'] - gdf['lst_mean'].mean()
+
+    gdf_residential = data.filter_on_area(gdf, '0')
+    gdf_residential['lst_mean_dev'] = gdf_residential['lst_mean'] - gdf_residential['lst_mean'].mean()
+
+    lst_fig  = figures.make_cloropleth_map(gdf_residential, 'lst_mean_dev')
+    ndvi_fig = figures.make_cloropleth_map(gdf, 'ndvi_mean')
+    inequality_fig = figures.make_inequality_scatter(gdf_residential, gdf)
+
+    return lst_fig, ndvi_fig, inequality_fig
 
 @callback(
     Output(component_id="kpi-mean", component_property="children"),
@@ -58,17 +73,10 @@ def update_cards(value):
     slope_txt = f"{abs(slope) / 10:.1f} °C"
     # section overview return : mean, min_val, min_loc, max_val, max_loc, px_rcoff, slope_txt
 
-    # section display map 
-    lst_fig  = figures.make_cloropleth_map(gdf_residential, 'lst_mean_dev')
-    ndvi_fig = figures.make_cloropleth_map(gdf, 'ndvi_mean')
-    # section display maps return: lst_fig, ndvi_fig
 
-    # section ndvi - lst relationship
+    lst_fig, ndvi_fig, inequality_fig = make_figures(value)
+
     scatter_lst_ndvi = figures.make_scatter_lst_ndvi(df, slope, intercept, ind['Pearson']['all'])
-    # section ndvi - lst return : px_rcoff, res_rcoff, parks_rcoff
-
-    # section scatter inequality
-    inequality_fig = figures.make_inequality_scatter(gdf_residential, gdf)
 
     return (
         mean, min_val, min_loc, max_val, max_loc, px_rcoff, slope_txt, 
