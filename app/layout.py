@@ -16,9 +16,9 @@ def stat_card(title, value, sub, stat_id, stat_location, accent="#CF4226", card_
         ], className=card_id, style={"--bar": accent}
     )
 
-def graph_card(fig_id, figure=None, classname="chart-card"):
+def graph_card(fig_id, figure=None, classname="chart-card", modebar = True):
     return html.Div(
-        dcc.Graph(id=fig_id, figure=figure, responsive=True),
+        dcc.Graph(id=fig_id, figure=figure, responsive=True, config={"displayModeBar": modebar}),
         className=classname
     )
 
@@ -61,7 +61,7 @@ def build_layout():
         html.A([html.I(className="fa-solid fa-satellite"), 'The maps'], href="#maps"),
         html.A([html.I(className="fa-solid fa-leaf"), 'Vegetation & heat'], href="#veg"),
         html.A([html.I(className="fa-solid fa-location-dot"), 'where'], href="#ranks"),
-        html.A([html.I(className="fa-solid fa-people-group"), 'Heat inequality'], href="#risk"),
+        html.A([html.I(className="fa-solid fa-building-user"), 'Heat inequality'], href="#risk"),
         html.A([html.I(className="fa-solid fa-people-group"), 'Demographics'], href="#demographics"),
         html.A([html.I(className="fa-solid fa-book-bookmark"), 'Methodology'], href="#method"),
     ], className='nav'), className="rail")
@@ -79,7 +79,7 @@ def build_layout():
                     stat_card("City mean surface temp", "—", "all areas", "kpi-mean", "loc-mean", accent="#E9C158"),
                     stat_card("Coolest Temperature", "—", "neighborhood", "kpi-min", "location-min", accent="#3D86C0"),
                     stat_card("Hottest Temperature", "—", "neighborhood", "kpi-max", "location-max", accent="#CF4226"),
-                    stat_card("Vegetation-heat coeff", "—", "Pearson correlation", "kpi-corr", "loc-corr", accent="#8493A0"),
+                    stat_card("Vegetation-heat coeff", "—", "Pearson correlation", "kpi-corr", "loc-corr", accent="hsl(120, 50%, 37%)"),
                     ],className='overview-card-section')
             ], className='section'),
         html.Section(
@@ -100,7 +100,7 @@ def build_layout():
                 html.H1("Vegetation & heat Correlation"),
                 html.P("text",className="section-description"),
                 html.Div([
-                    graph_card("scatter-fig"),
+                    graph_card("scatter-fig", modebar = False),
                     html.Div([
                         stat_card("Pixel Level", "—", "Pearson r", "scatter-rcoff", "scatter-rcoff-loc"),
                         stat_card("Residential only", "to come", "detail", "scatter-residential", "corr-residential-loc"),
@@ -126,7 +126,7 @@ def build_layout():
                         inline=True,          # lay the two options side by side
                         className="scope-toggle",
                     ),
-                    graph_card("ranking-fig"),
+                    graph_card("ranking-fig", modebar = False),
                     ], className="rank-chart",)
                 ],
             className='section'
@@ -137,7 +137,7 @@ def build_layout():
                 html.Div("risk", className="eyebrow"),
                 html.H1("Heat inequality"),
                 html.P("text",className="section-description"),
-                graph_card("risk-scatter-fig", classname="scatter-heat"),
+                graph_card("risk-scatter-fig", modebar = False),
                 ],
             className='section'
         ),
@@ -147,20 +147,22 @@ def build_layout():
             children = [
                 html.Div("Demographics", className="eyebrow"),
                 html.H1("Explore the communities at risk"),
-                dcc.RadioItems(
-                    id="demo-layer",
-                    options=[
-                        {"label": "Asian",             "value": "asian_pct"},
-                        {"label": "Black",             "value": "black_pct"},
-                        {"label": "Hispanic",          "value": "hispanic_pct"},
-                        {"label": "White",             "value": "white_pct"},
-                        {"label": "Predominant group", "value": "predominant_group"},
-                        ],
-                    value="hispanic_pct",
-                    inline=True,
-                    className="scope-toggle",
-                ),
-                graph_card("demographics-map", classname='demographic-chart')
+                html.Div([
+                    dcc.RadioItems(
+                        id="demo-layer",
+                        options=[
+                            {"label": "Asian",             "value": "asian_pct"},
+                            {"label": "Black",             "value": "black_pct"},
+                            {"label": "Hispanic",          "value": "hispanic_pct"},
+                            {"label": "White",             "value": "white_pct"},
+                            {"label": "Predominant group", "value": "predominant_group"},
+                            ],
+                        value="hispanic_pct",
+                        inline=True,
+                        className="scope-toggle",
+                    ),
+                    graph_card("demographics-map", classname='demographic-chart')
+                ], className='rank-chart')
                 ],
             className='section'
         ),
