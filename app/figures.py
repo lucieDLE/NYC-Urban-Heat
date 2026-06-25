@@ -79,7 +79,7 @@ def make_scatter_lst_ndvi(df_lst_ndvi, slope, intercept, pearson):
     fig = go.Figure()
     fig.add_trace(go.Heatmap(
         x=xc, y=yc, z=z,
-        colorscale="Blues_r",
+        colorscale="Greens_r",
         colorbar=dict(
             title=dict(text="pixel count"),
             tickvals=[0, 1, 2, 3],                      # log10 values…
@@ -244,10 +244,10 @@ def make_demographics_map(gdf, column):
 def make_predominant_map(gdf):
     n = len(colors.DEMO_GROUPS)
     group_to_int = {g: i for i, g in enumerate(colors.DEMO_GROUPS)}
-    colors = list(colors.DEMO_GROUP_COLORS.values())
+    list_colors = list(colors.DEMO_GROUP_COLORS.values())
 
     colorscale = []
-    for i, c in enumerate(colors):
+    for i, c in enumerate(list_colors):
         colorscale += [[i / n, c], [(i + 1) / n, c]]
 
     z = gdf["predominant_group"].map(group_to_int)
