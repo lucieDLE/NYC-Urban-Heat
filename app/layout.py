@@ -8,7 +8,15 @@ from src import config
 from data import dict_scene_mapping, list_scene_dropdown
 import display_text
 
-def stat_card(title, value, sub, stat_id, stat_location, accent="#CF4226", card_id='card'):
+def text_card(title, sub):
+    return html.Div([
+            html.Div(title),
+            html.P(sub),
+        ], className="text-card",
+    )
+
+
+def stat_card(title, value, sub, stat_id, stat_location, accent="hsl(120, 50%, 37%)", card_id='card'):
     return html.Div([
             html.Div(title),
             html.H5(value, id=stat_id), 
@@ -171,7 +179,16 @@ def build_layout():
                     children = [
                 html.Div("Method", className="eyebrow"),
                 html.H1("Method and References"),
-                html.P("text",className="section-description")
+                html.Div([
+                    text_card("Land Surface Temperature", "detail"),
+                    text_card("NDVI", "detail"),
+
+                    text_card("Aggregation", "detail"),
+                    text_card("Aggregation", "detail"),
+
+                    text_card("Data", "detail"),
+                    text_card("References", "detail"),
+                    ],className='method-cards')
                 ],
             className='section'
         ),
