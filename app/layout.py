@@ -32,11 +32,11 @@ def graph_card(fig_id, figure=None, classname="chart-card", modebar = True):
 
 def build_layout():
 
-    dark_mode_switch =  html.Span([
-            dbc.Label(className="fa fa-sun", html_for="switch"),
-            dbc.Switch(id="switch-theme", value=True, className="d-inline-block ms-1", persistence=True),
-            dbc.Label(className="fa fa-moon", html_for="switch"),
-        ])
+    # dark_mode_switch =  html.Span([
+    #         dbc.Label(className="fa fa-sun", html_for="switch"),
+    #         dbc.Switch(id="switch-theme", value=True, className="d-inline-block ms-1", persistence=True),
+    #         dbc.Label(className="fa fa-moon", html_for="switch"),
+    #     ])
 
     dropdown = dcc.Dropdown(
         options=list_scene_dropdown,
@@ -56,7 +56,7 @@ def build_layout():
 
     ribbon = html.Div([
             html.H1("Exploring NYC Urban Heat"), 
-            dark_mode_switch,
+            # dark_mode_switch,
         ], className="ribbon")
 
     subtitle = html.Div([
