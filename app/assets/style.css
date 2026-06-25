@@ -2,6 +2,47 @@
 :root {
     --disp: 'Space Grotesk', system-ui, sans-serif;
     --mono: 'JetBrains Mono', ui-monospace, monospace;
+
+    --black: hsl(0, 0%, 0%);
+    --white: hsl(0, 0%, 100%);
+
+    --gray-shade-1: hsl(0, 0%, 12%);
+    --gray-shade-2: hsl(0, 0%, 25%);
+    --gray-shade-3: hsl(0, 0%, 37%);
+    --gray-shade-4: hsl(0, 0%, 50%);
+    --gray-shade-5: hsl(0, 0%, 62%);
+    --gray-shade-6: hsl(0, 0%, 75%);
+    --gray-shade-7: hsl(0, 0%, 87%);
+    --gray-shade-8: hsl(0, 0%, 90%);
+    --gray-shade-9: hsl(0, 0%, 95%);
+
+    --green-shade-1: hsl(120, 50%, 12%);
+    --green-shade-2: hsl(120, 50%, 25%);
+    --green-shade-3: hsl(120, 50%, 37%);
+    --green-shade-4: hsl(120, 50%, 50%);
+    --green-shade-5: hsl(120, 50%, 62%);
+    --green-shade-6: hsl(120, 50%, 75%);
+    --green-shade-7: hsl(120, 50%, 87%);
+
+    --orange-shade-1: hsl(25, 100%, 12%);
+    --orange-shade-2: hsl(25, 100%, 25%);
+    --orange-shade-3: hsl(25, 100%, 37%);
+    --orange-shade-4: hsl(25, 100%, 50%);
+    --orange-shade-5: hsl(25, 100%, 62%);
+    --orange-shade-6: hsl(25, 100%, 75%);
+    --orange-shade-7: hsl(25, 100%, 87%);
+
+
+    --blue-shade-1: hsl(210, 25%, 10%);
+    --blue-shade-2: hsl(210, 25%, 25%);
+    --blue-shade-3: hsl(210, 25%, 37%);
+    --blue-shade-4: hsl(210, 25%, 50%);
+    --blue-shade-5: hsl(210, 25%, 62%);
+    --blue-shade-6: hsl(210, 25%, 75%);
+    --blue-shade-7: hsl(210, 25%, 80%);
+    --blue-shade-8: hsl(210, 25%, 87%);
+
+    --Dash-Fill-Interactive-Strong: var(--orange-shade-3);
 }
 
 body { font-family: var(--disp); }
@@ -10,14 +51,15 @@ body { font-family: var(--disp); }
     height: 100vh;             /* fill the whole viewport height */
     display: flex;
     flex-direction: column;    /* stack children top → bottom */
+    background-color: var(--blue-shade-8);
 }
 
 /* ---------  ribbon ----------- */
 .ribbon {
     height: 64px;
     flex-shrink: 0;            /* never let it get squished */
-    background: #131B26;
-    color: #fff;
+    background: var(--blue-shade-1);
+    color: var(--blue-shade-8);
     display: flex;
     align-items: center;       /* vertically center its contents */
     padding: 0 32px;
@@ -29,23 +71,27 @@ body { font-family: var(--disp); }
 
 .subtitle{
     display: flex;    /* row by default */
-    background: #131B26;
-    color: #fff;
+    background: var(--blue-shade-1);
+    color: var(--blue-shade-6);
     justify-content: space-between ;
     align-items: center;       /* vertically center its contents */
     padding-left: 32px;
     font-style: italic;
-    border-bottom: 2px solid #2B3848;
+    border-bottom: 2px solid var(--blue-shade-2);
 }
 .subtitle h5 { font-weight: 200; }
 
+/* .form-check-input:checked{
+    background-color: var(--green-shade-3);
+    border-color: var(--green-shade-1);
+} */
 /* ---------  Left rail ----------- */
 
 .rail {
     width: 264px;
     flex-shrink: 0;
-    background: #131B26;
-    color: #C7D2DE;
+    background: var(--blue-shade-1);
+    color:var(--blue-shade-3);
     align-items: center;       /* vertically center its contents */
     display: inline-block;
 }
@@ -57,7 +103,7 @@ body { font-family: var(--disp); }
 }
 
 .nav a{
-    color: rgba(116, 126, 142, 1);
+    color:var(--blue-shade-3);
     text-decoration: none;
     padding: 12px;
     margin-bottom: 12px;
@@ -69,8 +115,8 @@ body { font-family: var(--disp); }
 }
 
 nav a:hover {
-    background: #131B26;
-    color: #C7D2DE;
+    background: var(--green-shade-1);
+    color:var(--green-shade-3);
 }
 
 .nav a i { 
@@ -79,8 +125,8 @@ nav a:hover {
  } 
  /* .on class from .js allowing to known which section we are on/to highlight */
 .nav a.on { 
-    background: #1D2734;
-    color: #fff; 
+    background: var(--green-shade-2);
+    color: var(--green-shade-7); 
 }
 /* ---------  Center piece ----------- */
 
@@ -119,25 +165,32 @@ main {
     font-weight: 500;
     letter-spacing: .22em;
     text-transform: uppercase;
-    color: #DD4B2A;
+    color:var(--orange-shade-3);
     font-family: var(--mono);
 }
 
-
+.dash-dropdown{
+    align-items: center;
+    border-radius: 14px;
+    padding: 8px 14px;
+    box-shadow: 0 1px 2px rgba(19,27,38,.06), 0 1px 3px rgba(19,27,38,.05);
+    max-width: 680px;
+    margin-top: 12px;
+}
 /* ---------  Card ----------- */
 
 .card {
-    background: #fff;
+    background: var(--white);
     border-radius: 14px;
     padding: 22px 22px 18px;
     box-shadow: 0 2px 5px rgba(19,27,38,.05), 0 10px 28px rgba(19,27,38,.09);
-    border-top: 3px solid var(--bar, #CF4226);  /* colored accent strip */
+    border-top: 3px solid var(--bar, --green-shade-3);  /* colored accent strip */
 }
 
   /* type hierarchy inside the card */
 .card > div:first-child {
     font-size: 13px;
-    color: #55636E;
+    color: var(--blue-shade-3);
     font-weight: 500;
     font-family: var(--mono)
 }
@@ -147,11 +200,11 @@ main {
     letter-spacing: -.02em;
     margin: 12px 0 0;
     line-height: 1;
-    color: #16202E;
+    color:var(--blue-shade-1);
 }
 .card p {
     font-size: 11.5px;
-    color: #8493A0;
+    color:var(--blue-shade-5);
     margin: 10px 0 0;
 }
 
@@ -175,18 +228,18 @@ main {
 }
 .finding p { 
     font-size: 17px; 
-    color: #16202E; 
+    color: var(--blue-shade-1); 
     margin-bottom: 0px; 
 }
 
 /* satellites and scatter chart cards */
 
 .chart-card {
-    background: #fff;
+    background: var(--white);
     border-radius: 14px;
     padding: 22px 22px 18px;
     box-shadow: 0 2px 5px rgba(19,27,38,.05), 0 10px 28px rgba(19,27,38,.09);
-    max-width: 640px;
+    /* max-width: 640px; */
 }
 
 .panel{
@@ -215,26 +268,43 @@ main {
     gap: 24px;
 }
 
+.scatter-heat {
+    border-color: var(--orange-shade-4)
+}
+
 #maps {
     max-width: 1400px;
 }
+.maps-grid .chart-card {
+    overflow: hidden;
+    height: 500px;
+}
+
 #ranks .chart-card {
     max-width: none;   /* drop the 640px cap for this section's card */
+    box-shadow: none;
+
 }
+
 #ranks .js-plotly-plot { height: 480px !important; }
 
 .demographic-chart{
     min-height: 500px;
 }
 
+.rank-chart{
+    background-color: var(--white);
+    padding: 12px;
+    border-radius: 14px;
+}
 /* --------- Segmented toggle (RadioItems) --------- */
 .scope-toggle {
     display: inline-flex;
-    background: #F0F2F5;
+    background: var(--gray-shade-9);
     border-radius: 12px;
     padding: 4px;
     gap: 2px;
-    margin-bottom: 20px;
+    margin-bottom: 12px;
 }
 
 .scope-toggle label {
@@ -242,33 +312,49 @@ main {
     border-radius: 9px;
     font-size: 14px;
     font-weight: 500;
-    color: #8493A0;
+    color: var(--gray-shade-4);
     cursor: pointer;
     transition: background 0.15s ease, color 0.15s ease, box-shadow 0.15s ease;
     white-space: nowrap;
 }
-
+.scope-toggle input[type="radio"] {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+    pointer-events: none;
+    }
 
 .scope-toggle label:has(input[type="radio"]:checked) {
-    background: #ffffff;
-    color: #000000;
+    background: var(--white);
+    color: var(--orange-shade-3);
     font-weight: 600;
     box-shadow: 0 1px 3px rgba(19,27,38,.12), 0 1px 2px rgba(19,27,38,.08);
 }
 
 
-/* --------- Map cards: no padding so the tile fills the card --------- */
-.maps-grid .chart-card {
-    padding: 0;
-    overflow: hidden;
-    height: 500px;
-}
-.maps-grid .js-plotly-plot { height: 500px !important; }
-
 .demographic-chart .chart-card {
     padding: 0;
     overflow: hidden;
 }
-.dash-options-list-option selected {
-    background: #d94b4b;
+
+.method-cards{
+    display: grid; 
+    grid-template-columns: 1fr 1fr;
+
+}
+.text-card{
+    border-radius: 14px;
+    padding: 22px 22px 18px;
+    box-shadow: 0 2px 5px rgba(19,27,38,.05), 0 10px 28px rgba(19,27,38,.09);
+    background: var(--gray-shade-9);
+    margin: 8px;
+    color: var(--green-shade-3);
+    font-weight: 600;
+
+}
+.text-card p{
+    color: var(--blue-shade-4);
+    font-weight: 100;
+
 }
