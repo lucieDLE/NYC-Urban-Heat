@@ -95,7 +95,7 @@ def build_layout():
             children = [
                 html.Div("The maps", className="eyebrow"),
                 html.H1("Visualize the data"),
-                html.P("text",className="section-description"),
+                dcc.Markdown(display_text.SECTION_LST_NDVI_MAP,className="section-description"),
                 html.Div([
                     graph_card("map-lst"),
                     graph_card("map-ndvi"),
@@ -106,7 +106,7 @@ def build_layout():
             children = [
                 html.Div("Relationship", className="eyebrow"),
                 html.H1("Vegetation & heat Correlation"),
-                html.P("text",className="section-description"),
+                dcc.Markdown(display_text.SECTION_LST_NDVI_CORR,className="section-description"),
                 html.Div([
                     graph_card("scatter-fig", modebar = False),
                     html.Div([
@@ -122,7 +122,7 @@ def build_layout():
             children = [
                 html.Div("Where", className="eyebrow"),
                 html.H1("Heat and people"),
-                html.P("text", className="section-description"),
+                dcc.Markdown(display_text.SECTION_RANKED_BAR, className="section-description"),
                 html.Div([
                     dcc.RadioItems(
                         id="ranking-scope",
@@ -144,7 +144,7 @@ def build_layout():
             children = [
                 html.Div("risk", className="eyebrow"),
                 html.H1("Heat inequality"),
-                html.P("text",className="section-description"),
+                dcc.Markdown(display_text.SECTION_INEQUALITY_SCATTER,className="section-description"),
                 graph_card("risk-scatter-fig", modebar = False),
                 ],
             className='section'
@@ -155,6 +155,8 @@ def build_layout():
             children = [
                 html.Div("Demographics", className="eyebrow"),
                 html.H1("Explore the communities at risk"),
+                dcc.Markdown(display_text.SECTION_DEMOGRAPHICS,className="section-description"),
+
                 html.Div([
                     dcc.RadioItems(
                         id="demo-layer",

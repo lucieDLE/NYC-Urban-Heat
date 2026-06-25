@@ -48,5 +48,46 @@ NTA_MAPPING_GRAPH = {
 
 
 OVERVIEW_DESCRIPTION="""
-A pixel-by-pixel reading of land-surface temperature (LST) against vegetation (NDVI) across New York City neighborhoods, from Landsat 8 thermal imagery on clear summer days.
+A pixel-by-pixel reading of land-surface temperature (LST) against vegetation (NDVI) across New York City 
+neighborhoods, from Landsat 8 thermal imagery on clear summer days.
+"""
+
+SECTION_LST_NDVI_MAP = """ 
+*(Left) Residential neighborhoods colored by deviation from city-mean surface temperature.* 
+*(Right) All neighborhoods colored by vegetation index (NDVI, Higher is Greener)*.
+
+- Residential areas are cooler when they are near parks and/or water areas. 
+- Hottest residential areas cluster in southeast Queens, where NDVI is lowest
+
+The pattern is clear: **greener neighborhoods are cooler.**
+"""
+
+SECTION_LST_NDVI_CORR = """ 
+Across all land pixels the relationship is strong: ~ -0.9 °C per 0.1 NDVI. Filter to residential 
+areas only and the correlation drops sharply (r ≈ 0.26).
+
+**Greenery alone cannot explain the heat.** Building density, waste heat from AC systems, 
+and absence of waterfront/river all contribute.
+"""
+
+SECTION_RANKED_BAR = """ 
+Parks are the coolest places and residential areas the hottest after airports. Within residential 
+neighborhoods, **Queens dominates the top** of the list. 
+
+FiDi ranks among the coolest even with an NDVI of 0.19, it's surrounded by water on three sides,
+highlightig that NDVI is only one cooling driver.
+"""
+
+SECTION_INEQUALITY_SCATTER = """ 
+The scatter plot reveals who gets relief and who does not. 
+- **Top-left quadrant** (hot, low variability): neighborhoods that are uniformly hot with no cool refuge (Queens, Brooklyn). 
+- **Right side** (high variability): neighborhoods where people can find relief near waterfronts/parks (Staten Island, Manhattan). 
+- The population at the highest risk live in hot and uniform environment.
+"""
+
+SECTION_DEMOGRAPHICS = """ 
+Overlay demographics with neighborhoods:
+-  The predominantly **Hispanic and Black neighborhoods** in the Bronx and Queens align with the hottest and lowest-NDVI residential areas.
+- Meanwhile, the coolest residential neighborhoods (Staten Island, Manhattan) are predominantly White. 
+- The heat burden in New York is unevenly distributed, and it broadly tracks with the city's racial and socioeconomic geography.
 """
