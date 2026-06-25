@@ -53,7 +53,7 @@ neighborhoods, from Landsat 8 thermal imagery on clear summer days.
 """
 
 SECTION_LST_NDVI_MAP = """ 
-*(Left) Residential neighborhoods colored by deviation from city-mean surface temperature.* 
+*(Left) Residential neighborhoods colored by deviation from city-mean surface temperature.*  
 *(Right) All neighborhoods colored by vegetation index (NDVI, Higher is Greener)*.
 
 - Residential areas are cooler when they are near parks and/or water areas. 
@@ -90,4 +90,33 @@ Overlay demographics with neighborhoods:
 -  The predominantly **Hispanic and Black neighborhoods** in the Bronx and Queens align with the hottest and lowest-NDVI residential areas.
 - Meanwhile, the coolest residential neighborhoods (Staten Island, Manhattan) are predominantly White. 
 - The heat burden in New York is unevenly distributed, and it broadly tracks with the city's racial and socioeconomic geography.
+"""
+
+
+METHOD_SATELLITE="""
+Selected Region: **Path 013/Row 032** with **cloud cover range**: [0%,10%] and 
+Time Period: **June-September**.
+"""
+
+METHOD_LST="""
+Computed from **Landsat 8 B10**  band scaled to celsius, cloud-masked with the QA_PIXEL.
+"""
+
+METHOD_NDVI="""
+**Normalized Difference Vegetation Index (NDVI)** from the red and near-infrared surface-reflectance bands, NDVI = (NIR - RED) / (NIR+RED)
+"""
+
+METHOD_NTA="""
+**Neighborhood Tabulation Areas (NTAs)** selected from the NYC Open data and rasterized to the same grid as satellite data
+"""
+
+METHOD_AGGREGATION="""
+Aggregate pixels dataset to per NTA neighborhood with lst/ndvi mean/std/min/max.
+"""
+
+
+METHOD_REFERENCES="""
+- [USGS](https://www.usgs.gov/landsat-missions/landsat-collection-2-surface-temperature)
+- [NYC open data](https://data.cityofnewyork.us/City-Government/2020-Neighborhood-Tabulation-Areas-NTAs-Mapped/4hft-v355)
+- [Earth Data](https://www.earthdata.nasa.gov/topics/land-surface/normalized-difference-vegetation-index-ndvi)
 """

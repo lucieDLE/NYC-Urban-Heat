@@ -10,8 +10,8 @@ import display_text
 
 def text_card(title, sub):
     return html.Div([
-            html.Div(title),
-            html.P(sub),
+            html.H5(title),
+            dcc.Markdown(sub),
         ], className="text-card",
     )
 
@@ -68,7 +68,7 @@ def build_layout():
         html.A([html.I(className="fa-solid fa-calendar-day"), 'overview'], href="#overview"),
         html.A([html.I(className="fa-solid fa-satellite"), 'The maps'], href="#maps"),
         html.A([html.I(className="fa-solid fa-leaf"), 'Vegetation & heat'], href="#veg"),
-        html.A([html.I(className="fa-solid fa-location-dot"), 'where'], href="#ranks"),
+        html.A([html.I(className="fa-solid fa-location-dot"), 'Rankings'], href="#ranks"),
         html.A([html.I(className="fa-solid fa-building-user"), 'Heat inequality'], href="#risk"),
         html.A([html.I(className="fa-solid fa-people-group"), 'Demographics'], href="#demographics"),
         html.A([html.I(className="fa-solid fa-book-bookmark"), 'Methodology'], href="#method"),
@@ -120,8 +120,8 @@ def build_layout():
         html.Section(
             id='ranks', 
             children = [
-                html.Div("Where", className="eyebrow"),
-                html.H1("Heat and people"),
+                html.Div("Rankings", className="eyebrow"),
+                html.H1("Who gets the heat"),
                 dcc.Markdown(display_text.SECTION_RANKED_BAR, className="section-description"),
                 html.Div([
                     dcc.RadioItems(
@@ -182,14 +182,14 @@ def build_layout():
                 html.Div("Method", className="eyebrow"),
                 html.H1("Method and References"),
                 html.Div([
-                    text_card("Land Surface Temperature", "detail"),
-                    text_card("NDVI", "detail"),
+                    text_card("USGS Satellite Data", display_text.METHOD_SATELLITE),
+                    text_card("Neighborhoods", display_text.METHOD_NTA),
 
-                    text_card("Aggregation", "detail"),
-                    text_card("Aggregation", "detail"),
+                    text_card("Land Surface Temperature", display_text.METHOD_LST),
+                    text_card("NDVI", display_text.METHOD_NDVI),
 
-                    text_card("Data", "detail"),
-                    text_card("References", "detail"),
+                    text_card("Aggregation", display_text.METHOD_AGGREGATION),
+                    text_card("References", display_text.METHOD_REFERENCES),
                     ],className='method-cards')
                 ],
             className='section'

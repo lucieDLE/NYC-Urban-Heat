@@ -150,8 +150,12 @@ main {
     display: flex;
     flex-direction: column;
     justify-content: center;
+    gap: 24px;
 }
-.section h1{ font-family: var(--mono)}
+.section h1{ 
+    font-family: var(--mono);
+    margin-bottom: 16px;   /* on top of the gap */
+}
 
 .overview-card-section {
     display: grid;
@@ -161,7 +165,7 @@ main {
   }
 
 .eyebrow {
-    font-size: 11px;
+    font-size: 18px;
     font-weight: 500;
     letter-spacing: .22em;
     text-transform: uppercase;
@@ -350,11 +354,8 @@ main {
     background: var(--gray-shade-9);
     margin: 8px;
     color: var(--green-shade-3);
-    font-weight: 600;
 
 }
 .text-card p{
     color: var(--blue-shade-4);
-    font-weight: 100;
-
 }
