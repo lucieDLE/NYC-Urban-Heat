@@ -1,3 +1,14 @@
+---
+title: NYC Urban Heat
+emoji: 🌿
+colorFrom: green
+colorTo: red
+sdk: docker
+app_port: 8050
+pinned: false
+short_description: Exploring relationships between green space and heat in NYC neighborhoods
+---
+
 # NYC-Urban-Heat
 Analyzing the relationship between urban vegetation and surface temperature across NYC neighborhoods (NTAs), using Landsat 8 data.
 
@@ -6,55 +17,79 @@ Core questions:
 - which neighborhoods are most and least heat-exposed? 
 
 
-### 1. Data Sources
+## Key findings
 
-- [**Landsat 8/9 satellite imagery**](https://earthexplorer.usgs.gov):
-Collection: C2 Level 2
-Region: Path 013/Row 032. 
-Time Period: June-September
-Cloud cover range: [0%, 10%]
-
-Bands: 
-    - ST_B10 (LST), 
-    - SR_B4/B5 (NDVI), 
-    - QA_PIXEL (cloud mask).
-
-Scale factors: temp = raw×0.00341802 + 149.0 − 273.15 (°C); reflectance = raw×0.0000275 − 0.2. 
-
-- [**City neighborhood boundaries**](https://data.cityofnewyork.us/City-Government/2020-Neighborhood-Tabulation-Areas-NTAs-/9nt8-h7nd/about_data)
-
-- **City Demographic per NTA**
+- LST and NDVI are negatively correlated at every scale: more vegetation means lower surface temperature.
+- Hottest residential neighborhoods cluster in Queens/Bronx; coolest are Todt Hill (Staten Island).
+- High mean temperature + low std deviation ("evenly hot, no refuge") is the worst heat exposure pattern.
 
 
-### 2. Data Processing
-scalin all data to get temperatures/reflectance:
-- temp = raw×0.00341802 + 149.0 − 273.15 (°C)
-- reflectance = raw×0.0000275 − 0.2. 
+## Setup
 
-LST stands for Land Surface Temperature, BT for Brightness Temperature:
-NDVI stands for Normalized Difference Vegetation Index:
-- ndvi = (NIR - RED) / (NIR+RED)
-
-
-Neighborhood IDs rasterized via make_geocube(..., like=lst_celsius) so all layers share one grid; merged with xr.merge (aligns by coordinate, no coordinate join), flattened to one row per pixel.
-Aggregated to per-NTA GeoDataFrame gdf_nb_temperature with lst/ndvi mean/std/min/max. nb_id = borocode×100 + within-borough counter.
+```bash
+python -m venv geoproj
+source geoproj/bin/activate
+pip install -r requirements.txt
+```
 
 
 
-References
-Brightness Temperature (BT) is not the Land Surface Temperature (LST), we need to compute it using equation:
-* [1] https://www.researchgate.net/post/LST_from_ST_B10_data 
-* [2] https://www.usgs.gov/landsat-missions/landsat-collection-2-surface-temperature
-* https://d9-wret.s3.us-west-2.amazonaws.com/assets/palladium/production/s3fs-public/media/files/LSDS-1328_Landsat8-9_OLI-TIRS-C2-L2_DFCB-v7.pdf
-* https://d9-wret.s3.us-west-2.amazonaws.com/assets/palladium/production/s3fs-public/media/files/LSDS-2082_L9-Data-Users-Handbook_v1.pdf
-- https://www.earthdata.nasa.gov/topics/land-surface/normalized-difference-vegetation-index-ndvi
+## Data
+
+### 1. Satellite imagery (Landsat 8)
+
+Download from [USGS EarthExplorer](https://earthexplorer.usgs.gov):
+
+- Collection: C2 Level 2
+- Path/Row: 013/032 (covers New York City)
+- Period: June–September (summer scenes only)
+- Cloud cover: 0–10%
+- Bands needed: `ST_B10` (LST), `SR_B4` (red), `SR_B5` (NIR), `SR_B3` (green), `QA_PIXEL`
 
 
+### 2. Neighborhood boundaries (NTAs)
+
+Download the 2020 NTA GeoJSON from the [NYC Open Data portal](https://data.cityofnewyork.us/City-Government/2020-Neighborhood-Tabulation-Areas-NTAs-/9nt8-h7nd/about_data) 
+
+### 3. Demographics
+
+A pre-processed demographic CSV (race/ethnicity by NTA from the 2020 Census) is already included at `data/processed/nyc_nta_race_ethnicity_2020_exclusive.csv`. It was created from the [NYC Department of Ciy Planning](https://www.nyc.gov/content/planning/pages/resources/datasets/decennial-census)
 
 
-### Key findings
+## Preprocessing
 
-[-] LST vs NDVI correlation is scale-dependent: pixel level r≈ ___ , all-neighborhoods r≈ ____ , residential-only r≈ ___  (#TODO)
-[x] Hottest residential NTAs cluster in southeast Queens. Coolest: Todt Hill, Riverdale.
-[x] lst_std only meaningful conditioned on the mean: hot + low-std (evenly hot, no refuge) is the worst case
-[x] Within-neighborhood pixel correlation map was tried and dropped — it's blind to parks (no internal NDVI variance → r≈0) and only measures gradients in mixed neighborhoods. Not dashboard-worthy.
+After placing raw satellite files in `data/raw/`, run the preprocessing pipeline to generate per-scene GeoJSON and Parquet files:
+
+```bash
+python src/preprocess.py
+```
+
+This script:
+1. Applies cloud masking using the `QA_PIXEL` band.
+2. Converts raw DN values to Land Surface Temperature (°C) and NDVI/NDWI.
+3. Aggregates pixel-level values to neighborhood (NTA) statistics.
+4. Writes outputs to `data/processed/<scene_id>/`:
+   - `temperature.geojson`: per-NTA LST and NDVI statistics
+   - `lst_ndvi.parquet.gzip`: pixel-level sample for scatter plots
+
+Scenes are identified by their date range (e.g. `20230809_20230812`). Add or remove scene IDs in the `scenes` list at the top of `src/preprocess.py`.
+
+
+## Running the app
+
+```bash
+python app/app.py
+```
+
+Open [http://localhost:8050](http://localhost:8050) in your browser.
+
+The dropdown at the top of the dashboard lets you switch between processed satellite scenes.
+
+
+## Data sources
+
+- [USGS EarthExplorer - Landsat Collection 2 Level 2](https://earthexplorer.usgs.gov)
+- [NYC Open Data - 2020 Neighborhood Tabulation Areas](https://data.cityofnewyork.us/City-Government/2020-Neighborhood-Tabulation-Areas-NTAs-/9nt8-h7nd/about_data)
+- [Landsat Collection 2 Surface Temperature product guide](https://www.usgs.gov/landsat-missions/landsat-collection-2-surface-temperature)
+- [NASA EARTHDATA - NDVI](https://www.earthdata.nasa.gov/topics/land-surface/normalized-difference-vegetation-index-ndvi)
+- [NYC Department of Ciy Planning - Decennial Census Data](https://www.nyc.gov/content/planning/pages/resources/datasets/decennial-census)
