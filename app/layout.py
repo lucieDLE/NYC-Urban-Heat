@@ -65,13 +65,13 @@ def build_layout():
     )
 
     rail = html.Aside(html.Nav([
-        html.A([html.I(className="fa-solid fa-calendar-day"), 'overview'], href="#overview"),
+        html.A([html.I(className="fa-solid fa-calendar-day"), 'Overview'], href="#overview"),
         html.A([html.I(className="fa-solid fa-satellite"), 'The maps'], href="#maps"),
-        html.A([html.I(className="fa-solid fa-leaf"), 'Vegetation & heat'], href="#veg"),
-        html.A([html.I(className="fa-solid fa-location-dot"), 'Rankings'], href="#ranks"),
-        html.A([html.I(className="fa-solid fa-building-user"), 'Heat inequality'], href="#risk"),
+        html.A([html.I(className="fa-solid fa-leaf"), 'Correlation'], href="#veg"),
+        html.A([html.I(className="fa-solid fa-ranking-star"), 'Extremes'], href="#ranks"),
+        html.A([html.I(className="fa-solid fa-building-user"), 'Inequality'], href="#risk"),
         html.A([html.I(className="fa-solid fa-people-group"), 'Demographics'], href="#demographics"),
-        html.A([html.I(className="fa-solid fa-book-bookmark"), 'Methodology'], href="#method"),
+        html.A([html.I(className="fa-solid fa-book-bookmark"), 'Method'], href="#method"),
     ], className='nav'), className="rail")
 
     main = html.Main([
@@ -93,8 +93,8 @@ def build_layout():
         html.Section(
             id='maps', 
             children = [
-                html.Div("The maps", className="eyebrow"),
-                html.H1("Visualize the data"),
+                html.Div("Geography", className="eyebrow"),
+                html.H1("Heat and greenery across the city"),
                 dcc.Markdown(display_text.SECTION_LST_NDVI_MAP,className="section-description"),
                 html.Div([
                     graph_card("map-lst"),
@@ -105,7 +105,7 @@ def build_layout():
             id='veg', 
             children = [
                 html.Div("Relationship", className="eyebrow"),
-                html.H1("Vegetation & heat Correlation"),
+                html.H1("Greener blocks stay cooler"),
                 dcc.Markdown(display_text.SECTION_LST_NDVI_CORR,className="section-description"),
                 html.Div([
                     graph_card("scatter-fig", modebar = False),
@@ -142,8 +142,8 @@ def build_layout():
         html.Section(
             id='risk', 
             children = [
-                html.Div("risk", className="eyebrow"),
-                html.H1("Heat inequality"),
+                html.Div("Risk", className="eyebrow"),
+                html.H1("Some neighborhoods have little escape from the heat"),
                 dcc.Markdown(display_text.SECTION_INEQUALITY_SCATTER,className="section-description"),
                 graph_card("risk-scatter-fig", modebar = False),
                 ],
@@ -153,7 +153,7 @@ def build_layout():
         html.Section(
             id='demographics', 
             children = [
-                html.Div("Demographics", className="eyebrow"),
+                html.Div("COMMUNITY", className="eyebrow"),
                 html.H1("Explore the communities at risk"),
                 dcc.Markdown(display_text.SECTION_DEMOGRAPHICS,className="section-description"),
 
@@ -180,7 +180,7 @@ def build_layout():
             id='method', 
                     children = [
                 html.Div("Method", className="eyebrow"),
-                html.H1("Method and References"),
+                html.H1("Data and methodology"),
                 html.Div([
                     text_card("USGS Satellite Data", display_text.METHOD_SATELLITE),
                     text_card("Neighborhoods", display_text.METHOD_NTA),
