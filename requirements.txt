@@ -13,3 +13,4 @@ rioxarray==0.22.0
 seaborn==0.13.2
 shapely==2.1.2
 xarray==2026.4.0
+gunicorn
