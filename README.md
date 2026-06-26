@@ -2,7 +2,7 @@
 title: NYC Urban Heat
 emoji: 🌿
 colorFrom: green
-colorTo: red
+colorTo: green
 sdk: docker
 app_port: 8050
 pinned: false
