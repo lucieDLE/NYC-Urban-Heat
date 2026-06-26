@@ -4,7 +4,7 @@ emoji: 🌿
 colorFrom: green
 colorTo: green
 sdk: docker
-app_port: 8050
+app_port: 7860
 pinned: false
 short_description: relationships between green space and heat in NYC
 ---
