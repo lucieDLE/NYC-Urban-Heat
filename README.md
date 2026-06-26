@@ -6,7 +6,7 @@ colorTo: red
 sdk: docker
 app_port: 8050
 pinned: false
-short_description: Exploring relationships between green space and heat in NYC neighborhoods
+short_description: relationships between green space and heat in NYC
 ---
 
 # NYC-Urban-Heat
