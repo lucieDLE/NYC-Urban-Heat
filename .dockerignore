@@ -1,0 +1,9 @@
+data/raw
+data/other
+geoproj/
+.git/
+__pycache__/
+*.ipynb
+notebooks/
+.DS_Store
+*.pptx
